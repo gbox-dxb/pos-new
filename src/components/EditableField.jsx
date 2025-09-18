@@ -90,6 +90,7 @@ const EditableField = ({ initialValue, onSave, fieldName, orderId, isDuplicatePh
         <div 
             onClick={() => !disabled && setIsEditing(true)} 
             className={`group relative rounded p-1 -m-1 transition-colors flex items-center justify-between ${!disabled ? 'cursor-pointer hover:bg-white/5 dark:hover:bg-white/10' : 'cursor-not-allowed'} ${isDuplicatePhone ? 'text-red-400' : ''}`}
+            title={fieldName}
         >
             <span className="min-h-[20px] flex items-center">{value || <span className="text-muted-foreground/50">N/A</span>}</span>
             <div className="flex items-center">
