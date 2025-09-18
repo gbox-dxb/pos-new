@@ -407,14 +407,29 @@ const WooCommerceDashboardComponent = () => {
     setSelectedRows(new Set());
     setIsUpdatingOrders(false);
   };
-
+  
+  const flattenObject = (obj, prefix = "") => {
+    return Object.keys(obj).reduce((acc, key) => {
+      const value = obj[key];
+      const path = prefix ? `${prefix}/${key}` : key;
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+        Object.assign(acc, flattenObject(value, path));
+      } else {
+        acc[path] = value;
+      }
+      return acc;
+    }, {});
+  }
+  
   const handleUpdateOrderDetails = useCallback(async (storeId, orderId, data) => {
     setIsUpdatingDetails(true);
     try {
         let updatedOrderData;
         if (storeId === 'whatsapp-order') {
             const orderRef = ref(database, `orders/${orderId}`);
-            await update(orderRef, data);
+            /*await update(orderRef, data);*/
+            const updates = flattenObject(data, `orders/${orderId}`);
+            await update(ref(database), updates);
             const snapshot = await get(orderRef);
             updatedOrderData = snapshot.val();
         } else {
