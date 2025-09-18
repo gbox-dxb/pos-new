@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -43,7 +43,7 @@ const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenO
         ];
     }, [stores]);
 
-    useEffect(() => {
+    const applyFilters = useCallback(() => {
         let filtered = [...orders];
 
         if (searchTerm) {
@@ -77,6 +77,10 @@ const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenO
 
         onFilterChange(filtered);
     }, [orders, searchTerm, statusFilter, storeFilter, dateRange, onFilterChange]);
+
+    useEffect(() => {
+        applyFilters();
+    }, [orders, searchTerm, statusFilter, storeFilter, dateRange, applyFilters]);
 
     const resetFilters = () => {
         setSearchTerm('');

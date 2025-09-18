@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
 import { useStores } from '@/hooks/useStores';
@@ -11,7 +12,7 @@ import APISettings from '@/components/APISettings';
 import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { database } from '@/lib/firebase';
-import { ref, update, onValue, set } from 'firebase/database';
+import { ref, update, onValue, set, get } from 'firebase/database';
 import { useAccessControl } from '@/contexts/AccessControlContext';
 import { ShieldAlert } from 'lucide-react';
 
@@ -129,7 +130,7 @@ const MainDashboard = ({
 
 const WooCommerceDashboardComponent = () => {
   const { stores, addStore, updateStore, deleteStore, loadStoresFromStorage } = useStores();
-  const { orders, loadOrdersFromStorage, saveOrdersToStorage, deleteOrdersFromStorage, addImportedOrders, moveWhatsAppOrder, updateOrdersForStore } = useOrders();
+  const { orders, setOrders, loadOrdersFromStorage, saveOrdersToStorage, deleteOrdersFromStorage, addImportedOrders, moveWhatsAppOrder, updateOrdersForStore } = useOrders();
   
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -220,11 +221,10 @@ const WooCommerceDashboardComponent = () => {
     return `${totalRevenue.toLocaleString('en-US', { currency: 'AED', style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2 })} (mixed)`;
   }, [filteredOrders]);
 
-
-  useEffect(() => {
-    setFilteredOrders(sortedOrders);
+  const handleSetFilteredOrders = useCallback((newFilteredOrders) => {
+    setFilteredOrders(newFilteredOrders);
     setSelectedRows(new Set());
-  }, [sortedOrders]);
+  }, []);
 
   const handleScreenOptionsChange = (key, value) => {
     const newOptions = { ...screenOptions, [key]: value };
@@ -408,36 +408,51 @@ const WooCommerceDashboardComponent = () => {
     setIsUpdatingOrders(false);
   };
 
-  const handleUpdateOrderDetails = async (storeId, orderId, data) => {
+  const handleUpdateOrderDetails = useCallback(async (storeId, orderId, data) => {
     setIsUpdatingDetails(true);
     try {
+        let updatedOrderData;
         if (storeId === 'whatsapp-order') {
-          const orderRef = ref(database, `orders/${orderId}`);
-          await update(orderRef, data);
+            const orderRef = ref(database, `orders/${orderId}`);
+            await update(orderRef, data);
+            const snapshot = await get(orderRef);
+            updatedOrderData = snapshot.val();
         } else {
-          const updatedOrder = await updateOrderDetails({
-              storeId,
-              orderId,
-              data,
-              stores,
-              toast,
-          });
-
-          const newOrders = orders.map(order => {
-              if (order.id === orderId) {
-                  return { ...order, ...updatedOrder };
-              }
-              return order;
-          });
-          saveOrdersToStorage(newOrders);
+            updatedOrderData = await updateOrderDetails({
+                storeId,
+                orderId,
+                data,
+                stores,
+                toast,
+            });
         }
+
+        setOrders(currentOrders => {
+            const newOrders = currentOrders.map(order => {
+                if (order.id === orderId) {
+                    const newOrder = { ...order };
+                    Object.keys(data).forEach(key => {
+                        if (typeof data[key] === 'object' && data[key] !== null && !Array.isArray(data[key])) {
+                            newOrder[key] = { ...newOrder[key], ...data[key] };
+                        } else {
+                            newOrder[key] = data[key];
+                        }
+                    });
+                    return newOrder;
+                }
+                return order;
+            });
+            saveOrdersToStorage(newOrders);
+            return newOrders;
+        });
+
     } catch(error) {
         console.error("Update failed from dashboard:", error);
         throw error; 
     } finally {
         setIsUpdatingDetails(false);
     }
-  };
+  }, [stores, toast, setOrders, saveOrdersToStorage]);
 
   const handleUpdateWhatsAppOrder = async (orderId, data) => {
     const orderRef = ref(database, `whatsapp_orders/${orderId}`);
@@ -479,7 +494,7 @@ const WooCommerceDashboardComponent = () => {
             handleOpenStoreModal={handleOpenStoreModal}
             handleExport={handleExport}
             handleImport={handleImportClick}
-            setFilteredOrders={setFilteredOrders}
+            setFilteredOrders={handleSetFilteredOrders}
             handleScreenOptionsChange={handleScreenOptionsChange}
             deleteStore={deleteStore}
             handleUpdateOrders={handleUpdateOrders}

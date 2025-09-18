@@ -38,13 +38,6 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     });
   };
 
-  const formatCurrency = (amount, currency) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency || 'AED'
-    }).format(amount);
-  };
-
   const handleFieldSave = (orderId, data) => {
     return onUpdateOrderDetails(order.store_id, orderId, data);
   };
@@ -157,7 +150,13 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       </td>}
       {visibleColumns.total && <td>
         <div className="font-medium text-green-400">
-          {formatCurrency(order.total, order.currency)}
+          <EditableField 
+            initialValue={order.total} 
+            onSave={handleFieldSave} 
+            fieldName="total" 
+            orderId={order.id} 
+            disabled={!canEdit} 
+          />
         </div>
       </td>}
       {visibleColumns.actions && <td>
