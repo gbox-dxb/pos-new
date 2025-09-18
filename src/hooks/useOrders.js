@@ -105,8 +105,8 @@ export const useOrders = () => {
   const moveWhatsAppOrder = useCallback(async (waOrder) => {
     const ordersRef = ref(database, 'orders');
     const newOrderRef = push(ordersRef);
-    const newId = newOrderRef.key;
-
+    // const newId = newOrderRef.key;
+    const newId = `${waOrder.ref.replace(/^([A-Za-z]{2})[A-Za-z0-9]*-.*([0-9]{2}).*$/, "$1$2")}`+Math.floor(10000 + Math.random() * 90000);
     const nameParts = (waOrder.name || '').split(' ');
     const firstName = nameParts[0] || '';
     const lastName = nameParts.slice(1).join(' ') || '';
