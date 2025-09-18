@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Database, MessageSquare, Trash, FileUp, ShieldAlert, Send, PlusCircle, Edit, X, Search } from 'lucide-react';
+import { Database, MessageSquare, Trash, FileUp, ShieldAlert, Send, PlusCircle, Edit, X, Search, Save, Ban } from 'lucide-react';
 import { database } from '@/lib/firebase';
 import { ref, onValue, set, remove, get, update } from 'firebase/database';
 import EditableField from '@/components/EditableField';
@@ -101,6 +101,50 @@ const SheetTabs = ({ sheets, activeSheetId, onSelectSheet, onAddSheet, onRenameS
   );
 };
 
+const NewOrderRow = ({ onSave, onCancel }) => {
+  const [newOrder, setNewOrder] = useState({
+    ref: '', date: '', name: '', mobile: '', address: '', city: '',
+    items: '', price: '', delivery: '', totalPayment: '', note: '', importantNote: ''
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewOrder(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = () => {
+    onSave(newOrder);
+  };
+
+  return (
+    <TableRow className="bg-muted/50">
+      <TableCell></TableCell>
+      <TableCell><Input name="ref" value={newOrder.ref} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="date" value={newOrder.date} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="name" value={newOrder.name} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="mobile" value={newOrder.mobile} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="address" value={newOrder.address} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="city" value={newOrder.city} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="items" value={newOrder.items} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="price" value={newOrder.price} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="delivery" value={newOrder.delivery} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="totalPayment" value={newOrder.totalPayment} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="note" value={newOrder.note} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell><Input name="importantNote" value={newOrder.importantNote} onChange={handleInputChange} className="h-8" /></TableCell>
+      <TableCell>
+        <div className="flex gap-1">
+          <Button variant="ghost" size="icon" onClick={handleSave} title="Save Order">
+            <Save className="h-4 w-4 text-green-500" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={onCancel} title="Cancel">
+            <Ban className="h-4 w-4 text-red-500" />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};
+
 
 const WhatsAppOrders = ({ onMoveOrder }) => {
   const [inputText, setInputText] = useState('');
@@ -110,6 +154,7 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
+  const [isAddingOrder, setIsAddingOrder] = useState(false);
 
   useEffect(() => {
     const sheetsRef = ref(database, WHATSAPP_SHEETS_REF);
@@ -390,7 +435,15 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
         });
     }
 
-    return filtered;
+    return filtered.sort((a, b) => {
+      try {
+        const dateA = new Date(a.date.split('/').reverse().join('-'));
+        const dateB = new Date(b.date.split('/').reverse().join('-'));
+        return dateB - dateA;
+      } catch (e) {
+        return 0;
+      }
+    });
   }, [currentOrders, searchTerm, dateFilter]);
 
   useEffect(() => {
@@ -403,6 +456,23 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
   const handleFieldSave = (orderId, data) => {
     const orderDataRef = ref(database, `${WHATSAPP_SHEETS_REF}/${activeSheetId}/orders/${orderId}`);
     return update(orderDataRef, data);
+  };
+
+  const handleSaveNewOrder = async (newOrderData) => {
+    if (!activeSheetId) {
+      toast({ title: 'Error', description: 'No active sheet selected.', variant: 'destructive' });
+      return;
+    }
+    const newId = uuidv4();
+    const orderWithId = { ...newOrderData, id: newId };
+    const newOrderRef = ref(database, `${WHATSAPP_SHEETS_REF}/${activeSheetId}/orders/${newId}`);
+    try {
+      await set(newOrderRef, orderWithId);
+      toast({ title: 'Order Saved', description: 'New order has been added successfully.' });
+      setIsAddingOrder(false);
+    } catch (error) {
+      toast({ title: 'Error Saving Order', description: error.message, variant: 'destructive' });
+    }
   };
 
   const totalOrdersInDB = useMemo(() => {
@@ -477,6 +547,10 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
               <CardTitle>Parsed Orders</CardTitle>
             </div>
             <div className="flex gap-2 flex-wrap justify-end">
+              <Button onClick={() => setIsAddingOrder(true)} disabled={!activeSheetId || isAddingOrder}>
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Add Order
+              </Button>
               {selectedRows.size > 0 && (
                 <>
                   <Button onClick={handleMoveSelected}>
@@ -568,6 +642,7 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {isAddingOrder && <NewOrderRow onSave={handleSaveNewOrder} onCancel={() => setIsAddingOrder(false)} />}
                   {filteredOrders.length > 0 ? filteredOrders.map(order => (
                     <TableRow key={order.id} data-state={selectedRows.has(order.id) ? "selected" : undefined}>
                       <TableCell>
@@ -600,11 +675,13 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
                       </TableCell>
                     </TableRow>
                   )) : (
-                    <TableRow>
-                      <TableCell colSpan={14} className="h-24 text-center">
-                        No orders match your filters.
-                      </TableCell>
-                    </TableRow>
+                    !isAddingOrder && (
+                      <TableRow>
+                        <TableCell colSpan={14} className="h-24 text-center">
+                          No orders match your filters.
+                        </TableCell>
+                      </TableRow>
+                    )
                   )}
                 </TableBody>
               </Table>

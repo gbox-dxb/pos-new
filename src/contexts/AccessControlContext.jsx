@@ -23,6 +23,7 @@ const defaultPermissions = {
     tracking: 'edit',
     'access-manager': 'edit',
   },
+  allowedStores: null, // null means all stores
 };
 
 export const AccessControlProvider = ({ children }) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { PlusCircle, MoreHorizontal, Trash2, Edit, Copy, Send, Clock, Shield, Users, Key, Settings } from 'lucide-react';
+import { PlusCircle, MoreHorizontal, Trash2, Edit, Copy, Send, Clock, Shield, Users, Key, Settings, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -16,6 +16,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useStores } from '@/hooks/useStores';
 
 const initialPermissions = {
   viewRevenue: false,
@@ -32,6 +34,7 @@ const initialPermissions = {
     tracking: 'none',
     'access-manager': 'none',
   },
+  allowedStores: {},
 };
 
 const tabLabels = {
@@ -45,9 +48,9 @@ const tabLabels = {
   'access-manager': 'Access Manager',
 };
 
-const RoleForm = ({ role, onSave, onCancel, roles }) => {
+const RoleForm = ({ role, onSave, onCancel, allStores }) => {
   const [name, setName] = useState(role ? role.name : '');
-  const [permissions, setPermissions] = useState(role ? role.permissions : initialPermissions);
+  const [permissions, setPermissions] = useState(role ? { ...initialPermissions, ...role.permissions } : initialPermissions);
 
   const handlePermissionChange = (key, value) => {
     setPermissions(prev => ({ ...prev, [key]: value }));
@@ -58,6 +61,18 @@ const RoleForm = ({ role, onSave, onCancel, roles }) => {
       ...prev,
       tabs: { ...prev.tabs, [tab]: value },
     }));
+  };
+
+  const handleStoreAccessChange = (storeId, checked) => {
+    setPermissions(prev => {
+      const newAllowedStores = { ...prev.allowedStores };
+      if (checked) {
+        newAllowedStores[storeId] = true;
+      } else {
+        delete newAllowedStores[storeId];
+      }
+      return { ...prev, allowedStores: newAllowedStores };
+    });
   };
 
   const handleSubmit = (e) => {
@@ -103,6 +118,24 @@ const RoleForm = ({ role, onSave, onCancel, roles }) => {
               </Select>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="space-y-4 rounded-lg border p-4">
+        <h3 className="font-semibold">Store Access</h3>
+        <div className="space-y-2">
+          {allStores.length > 0 ? allStores.map(store => (
+            <div key={store.id} className="flex items-center space-x-2 rounded-lg border p-3 shadow-sm">
+              <Checkbox
+                id={`store-${store.id}`}
+                checked={!!permissions.allowedStores[store.id]}
+                onCheckedChange={(checked) => handleStoreAccessChange(store.id, checked)}
+              />
+              <label htmlFor={`store-${store.id}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                {store.name}
+              </label>
+            </div>
+          )) : <p className="text-sm text-muted-foreground">No stores found. Add stores in the 'Stores' tab first.</p>}
         </div>
       </div>
 
@@ -192,6 +225,11 @@ const AccessManager = () => {
   const [itemToDelete, setItemToDelete] = useState(null); // { type: 'user' | 'role', data: object }
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { stores: allStores, loadStoresFromStorage } = useStores();
+
+  useEffect(() => {
+    loadStoresFromStorage();
+  }, [loadStoresFromStorage]);
 
   useEffect(() => {
     const usersRef = ref(database, 'accessManager/users');
@@ -344,7 +382,7 @@ const AccessManager = () => {
           </CardHeader>
           <CardContent>
             {isUserFormOpen && <UserForm user={editingUser} roles={roles} onSave={handleSaveUser} onCancel={() => { setIsUserFormOpen(false); setEditingUser(null); }} />}
-            {isRoleFormOpen && <RoleForm role={editingRole} roles={roles} onSave={handleSaveRole} onCancel={() => { setIsRoleFormOpen(false); setEditingRole(null); }} />}
+            {isRoleFormOpen && <RoleForm role={editingRole} onSave={handleSaveRole} onCancel={() => { setIsRoleFormOpen(false); setEditingRole(null); }} allStores={allStores} />}
           </CardContent>
         </Card>
       )}
@@ -391,12 +429,13 @@ const AccessManager = () => {
             <CardHeader><CardTitle>Access Roles</CardTitle><CardDescription>Define roles and their specific permissions.</CardDescription></CardHeader>
             <CardContent>
               <Table>
-                <TableHeader><TableRow><TableHead>Role Name</TableHead><TableHead>Users</TableHead><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead>Role Name</TableHead><TableHead>Users</TableHead><TableHead>Stores</TableHead><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {roles.length > 0 ? roles.map(role => (
                     <TableRow key={role.id}>
                       <TableCell className="font-medium">{role.name}</TableCell>
                       <TableCell>{users.filter(u => u.roleId === role.id).length}</TableCell>
+                      <TableCell>{role.permissions.allowedStores ? Object.keys(role.permissions.allowedStores).length : 0} / {allStores.length}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild><Button variant="ghost" className="h-8 w-8 p-0"><span className="sr-only">Open menu</span><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
@@ -407,7 +446,7 @@ const AccessManager = () => {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  )) : <TableRow><TableCell colSpan={3} className="text-center">No roles found. Create one to get started.</TableCell></TableRow>}
+                  )) : <TableRow><TableCell colSpan={4} className="text-center">No roles found. Create one to get started.</TableCell></TableRow>}
                 </TableBody>
               </Table>
             </CardContent>
