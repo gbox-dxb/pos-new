@@ -72,7 +72,7 @@ const DashboardTabs = ({
                         <TabsList
                             ref={provided.innerRef}
                             {...provided.droppableProps}
-                            className={`grid w-full h-auto grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-${visibleTabs.length}`}
+                            className={`grid w-full h-auto grid-cols-1 sm:grid-cols-2 md:grid-cols-8 mb-6 bg-primary/10`}
                         >
                             {visibleTabs.map((tabId, index) => (
                                 <Draggable key={tabId} draggableId={tabId} index={index} isDragDisabled={!isAdmin}>
