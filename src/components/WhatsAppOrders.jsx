@@ -418,7 +418,8 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
         });
     }
 
-    if (dateFilter !== 'all') {
+    // old date filter logic with Select input box
+    /*if (dateFilter !== 'all') {
         const now = new Date();
         let filterDate = new Date();
         if (dateFilter === 'today') {
@@ -435,6 +436,23 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
             const orderDate = new Date(`${year.length === 2 ? '20' + year : year}-${month}-${day}`);
             return orderDate >= filterDate;
         });
+    }*/
+    
+    if (dateFilter?.from) {
+      const fromDate = new Date(dateFilter.from);
+      fromDate.setHours(0, 0, 0, 0);
+      
+      const toDate = dateFilter.to ? new Date(dateFilter.to) : new Date(dateFilter.from);
+      toDate.setHours(23, 59, 59, 999);
+      
+      filtered = filtered.filter(order => {
+        if (!order.date || !/^\d{2}\/\d{2}\/\d{2,4}$/.test(order.date)) return false;
+        
+        const [day, month, year] = order.date.split('/');
+        const orderDate = new Date(`${year.length === 2 ? '20' + year : year}-${month}-${day}`);
+        
+        return orderDate >= fromDate && orderDate <= toDate;
+      });
     }
 
     return filtered.sort((a, b) => {
