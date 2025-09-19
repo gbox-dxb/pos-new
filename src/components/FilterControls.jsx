@@ -90,62 +90,63 @@ const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenO
     };
 
     return (
+      <>
         <Card className="p-4 mb-6">
-            <div className="flex flex-col lg:flex-row gap-4 items-center">
-                <div className="relative flex-grow w-full">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input
-                        placeholder="Search all order fields..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 w-full"
-                    />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-4 w-full lg:w-auto items-center">
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger className="w-full lg:w-[150px]">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {orderStatuses.map((status) => (
-                                <SelectItem key={status.value} value={status.value}>
-                                    {status.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={storeFilter} onValueChange={setStoreFilter}>
-                        <SelectTrigger className="w-full lg:w-[150px]">
-                            <SelectValue placeholder="Store" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {storeOptions.map(store => (
-                                <SelectItem key={store.id || store.value} value={store.id || store.value}>
-                                    {store.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    
-                    <DateRangePicker date={dateRange} onDateChange={setDateRange} />
-                </div>
-
-                <div className="flex items-center gap-2 w-full lg:w-auto">
-                    <ScreenOptions 
-                        visibleColumns={screenOptions.visibleColumns}
-                        itemsPerPage={screenOptions.itemsPerPage}
-                        onColumnChange={(column, checked) => onScreenOptionsChange('visibleColumns', { ...screenOptions.visibleColumns, [column]: checked })}
-                        onItemsPerPageChange={(value) => onScreenOptionsChange('itemsPerPage', value)}
-                    />
-                    <Button variant="outline" onClick={resetFilters}>Reset</Button>
-                </div>
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            <div className="relative flex-grow w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search all order fields..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 w-full"
+              />
             </div>
-            <div className="text-right mt-2 text-sm text-muted-foreground">
-                Showing {filteredCount} of {orders.length} orders
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-4 w-full lg:w-auto items-center">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full lg:w-[150px]">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {orderStatuses.map((status) => (
+                    <SelectItem key={status.value} value={status.value}>
+                      {status.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <Select value={storeFilter} onValueChange={setStoreFilter}>
+                <SelectTrigger className="w-full lg:w-[150px]">
+                  <SelectValue placeholder="Store" />
+                </SelectTrigger>
+                <SelectContent>
+                  {storeOptions.map(store => (
+                    <SelectItem key={store.id || store.value} value={store.id || store.value}>
+                      {store.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <DateRangePicker date={dateRange} onDateChange={setDateRange} />
             </div>
+            
+            <div className="flex items-center gap-2 w-full lg:w-auto">
+              <ScreenOptions
+                visibleColumns={screenOptions.visibleColumns}
+                itemsPerPage={screenOptions.itemsPerPage}
+                onColumnChange={(column, checked) => onScreenOptionsChange('visibleColumns', { ...screenOptions.visibleColumns, [column]: checked })}
+                onItemsPerPageChange={(value) => onScreenOptionsChange('itemsPerPage', value)}
+              />
+              <Button variant="outline" onClick={resetFilters}>Reset</Button>
+            </div>
+          </div>
         </Card>
+        <div className="text-right mt-2 text-sm text-muted-foreground me-3">
+          Showing {filteredCount} of {orders.length} orders
+        </div>
+      </>
     );
 };
 
