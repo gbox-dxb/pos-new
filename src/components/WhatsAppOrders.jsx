@@ -14,6 +14,7 @@ import { ref, onValue, set, remove, get, update } from 'firebase/database';
 import EditableField from '@/components/EditableField';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {DateRangePicker} from "@/components/DateRangePicker.jsx";
 
 const WHATSAPP_SHEETS_REF = 'whatsapp_sheets';
 
@@ -597,7 +598,8 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
                         />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-4 w-full lg:w-auto">
-                        <Select value={dateFilter} onValueChange={setDateFilter}>
+                        <DateRangePicker date={dateFilter} onDateChange={setDateFilter} />
+                        {/*<Select value={dateFilter} onValueChange={setDateFilter}>
                             <SelectTrigger className="w-full lg:w-[150px]">
                                 <SelectValue placeholder="Date" />
                             </SelectTrigger>
@@ -608,7 +610,7 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
                                     </SelectItem>
                                 ))}
                             </SelectContent>
-                        </Select>
+                        </Select>*/}
                         <Button variant="outline" onClick={resetFilters}>Reset</Button>
                     </div>
                 </div>
