@@ -8,7 +8,31 @@
 		<title>Hostinger Horizons</title>
 	</head>
 	<body>
+        <div id="scrollToTop" class="fixed bottom-0 right-4 py-2 px-3 rounded-lg bg-primary/10 cursor-pointer mb-4">
+            <span class="text-primary">🢁</span>
+        </div>
 		<div id="root"></div>
 		<script type="module" src="/src/main.jsx"></script>
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            console.log("Ready!");
+            const scrollBtn = document.getElementById("scrollToTop");
+
+            window.addEventListener("scroll", () => {
+              if (window.scrollY > 150) {
+                scrollBtn.classList.remove("opacity-0");
+              } else {
+                scrollBtn.classList.add("opacity-0");
+              }
+            });
+
+            scrollBtn.addEventListener("click", () => {
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+              });
+            });
+          });
+        </script>
 	</body>
 </html>
