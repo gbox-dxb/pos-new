@@ -306,23 +306,56 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
 
     // Always include store name for re-importing
     row['Store'] = order.store_name;
-
-    if (visibleColumns.order) row['Order ID'] = order.id;
-    if (visibleColumns.date) row['Date'] = new Date(order.date_created).toISOString();
-    if (visibleColumns.status) row['Status'] = order.status;
+    
     if (visibleColumns.billing) {
       row['Billing First Name'] = billing.first_name;
       row['Billing Last Name'] = billing.last_name;
-      row['Billing Company'] = billing.company;
       row['Billing Address 1'] = billing.address_1;
-      row['Billing Address 2'] = billing.address_2;
+      row['Billing Phone'] = billing.phone;
+      row['Billing Mobile'] = billing.phone;
       row['Billing City'] = billing.city;
+      row['Billing Address 2'] = billing.address_2;
+      row['Billing Country'] = billing.country;
+      row['Billing Company'] = billing.company;
+    }
+    
+    if (visibleColumns.total) {
+      row['Currency'] = order.currency;
+      row['Total'] = order.total;
+    }
+    
+    // added extra field
+    row['Qty'] = 1;
+    row['Weight'] = 0.5;
+    row['Volume'] = 0;
+    
+    let ref;
+    if (order.store_id === "whatsapp-order") {
+      ref = order.id
+    } else {
+      ref = order.store_name.slice(-3) + '' + order.id
+    }
+    if (visibleColumns.ref) {
+      row['Reference'] = ref;
+    }
+    
+    if (visibleColumns.items) {
+      row['Items'] = order.line_items?.map(item => `${item.quantity}x ${item.name} (SKU: ${item.sku || 'N/A'})`).join('; ') || '';
+      row['Customer Note'] = order.customer_note;
+    }
+    
+    row['Store Name'] = order.store_name;
+    
+    if (visibleColumns.order) row['Order ID'] = order.id;
+    if (visibleColumns.date) row['Date'] = new Date(order.date_created).toISOString();
+    if (visibleColumns.status) row['Status'] = order.status;
+    
+    if (visibleColumns.billing) {
       row['Billing Postcode'] = billing.postcode;
       row['Billing State'] = billing.state;
-      row['Billing Country'] = billing.country;
       row['Billing Email'] = billing.email;
-      row['Billing Phone'] = billing.phone;
     }
+    
     if (visibleColumns.shipping) {
       row['Shipping First Name'] = shipping.first_name;
       row['Shipping Last Name'] = shipping.last_name;
@@ -334,16 +367,9 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
       row['Shipping State'] = shipping.state;
       row['Shipping Country'] = shipping.country;
     }
-    if (visibleColumns.total) {
-      row['Total'] = order.total;
-      row['Currency'] = order.currency;
-    }
+    
     if (visibleColumns.payment) row['Payment Method'] = order.payment_method_title || order.payment_method;
-    if (visibleColumns.items) {
-      row['Customer Note'] = order.customer_note;
-      row['Items'] = order.line_items?.map(item => `${item.quantity}x ${item.name} (SKU: ${item.sku || 'N/A'})`).join('; ') || '';
-    }
-
+    
     return row;
   });
 
