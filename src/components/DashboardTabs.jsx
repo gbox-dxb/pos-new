@@ -53,16 +53,17 @@ const DashboardTabs = ({
 
     const tabDetails = {
         orders: { label: 'Orders' },
+        whatsapp: { label: 'WhatsApp Orders' },
         trashed: { label: `Trashed (${trashedOrders.length})` },
         stock: { label: 'Stock Manager' },
         stores: { label: `Stores (${stores.length})` },
         products: { label: 'Top Products' },
-        whatsapp: { label: 'WhatsApp Orders' },
         tracking: { label: 'Tracking' },
         'access-manager': { label: 'Access Manager' },
     };
-
-    const visibleTabs = tabOrder.filter(tabId => permissions.tabs[tabId] && permissions.tabs[tabId] !== 'none');
+  
+    const visibleTabs = Object.keys(tabDetails).filter(tabId => permissions.tabs[tabId] && permissions.tabs[tabId] !== 'none');
+    // const visibleTabs = tabOrder.filter(tabId => permissions.tabs[tabId] && permissions.tabs[tabId] !== 'none');
 
     return (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
