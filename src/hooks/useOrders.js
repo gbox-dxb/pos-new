@@ -132,12 +132,15 @@ export const useOrders = () => {
     
     const isValidNote = (field) => {
       const value = waOrder[field]?.trim();
-      return !!(value && value !== '---');
+      return !!(value && !/^[-\s]+$/.test(value));
     };
     const extractNumber = (str) => {
-      return str ? parseInt(str.replace(/\D/g, ""), 10) : undefined;
+      let empty = !/^[-\s]+$/.test(str)
+      if (!str || !empty) return null;
+      const num = parseInt(str.replace(/\D/g, ""), 10);
+      return isNaN(num) ? null : num;
     };
-    const finalAmount = (waOrder.totalPayment ? extractNumber(waOrder.totalPayment) : extractNumber(waOrder.price)).toString();
+    const finalAmount = (extractNumber(waOrder.totalPayment) || extractNumber(waOrder.price)).toString();
     
     const newOrder = {
       id: newId,
@@ -147,8 +150,8 @@ export const useOrders = () => {
       date_created: moment().format("YYYY-MM-DDTHH:mm:ss"),
       status: 'processing',
       billing: {
-        first_name: firstName,
-        last_name: lastName,
+        first_name: waOrder.name,
+        last_name: "",
         address_1: waOrder.address,
         city: waOrder.city,
         phone: waOrder.mobile,
