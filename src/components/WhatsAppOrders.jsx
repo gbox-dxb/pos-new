@@ -74,13 +74,17 @@ const SheetTabs = ({ sheets, activeSheetId, onSelectSheet, onAddSheet, onRenameS
 
   return (
     <div className="flex items-center gap-1 p-2 bg-background/80 backdrop-blur-md border-b border-slate-700 overflow-x-auto">
+      <Button variant="ghost" size="icon" onClick={onAddSheet}>
+        <PlusCircle className="h-4 w-4" />
+      </Button>
+      
       {Object.values(sheets).map(sheet => (
         <div key={sheet.id} className="relative group flex-shrink-0">
           <Button
             variant={activeSheetId === sheet.id ? 'secondary' : 'ghost'}
             size="sm"
             onClick={() => onSelectSheet(sheet.id)}
-            className="pr-12"
+            className="pr-14 me-1"
           >
             {sheet.name}
           </Button>
@@ -94,9 +98,6 @@ const SheetTabs = ({ sheets, activeSheetId, onSelectSheet, onAddSheet, onRenameS
           </div>
         </div>
       ))}
-      <Button variant="ghost" size="icon" onClick={onAddSheet}>
-        <PlusCircle className="h-4 w-4" />
-      </Button>
     </div>
   );
 };

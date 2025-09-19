@@ -1,4 +1,4 @@
-
+import moment from "moment";
 import { useState, useCallback } from 'react';
 import { database } from '@/lib/firebase';
 import { ref, onValue, set, get, push, child, remove } from 'firebase/database';
@@ -129,12 +129,22 @@ export const useOrders = () => {
 
     const totalValue = waOrder.totalPayment || waOrder.price || '0';
     const totalNumber = parseFloat(String(totalValue).replace(/[^0-9.]/g, '')) || 0;
-
+    
+    const isValidNote = (field) => {
+      const value = waOrder[field]?.trim();
+      return !!(value && value !== '---');
+    };
+    const extractNumber = (str) => {
+      return str ? parseInt(str.replace(/\D/g, ""), 10) : undefined;
+    };
+    const finalAmount = (waOrder.totalPayment ? extractNumber(waOrder.totalPayment) : extractNumber(waOrder.price)).toString();
+    
     const newOrder = {
       id: newId,
       store_id: 'whatsapp-order',
       store_name: 'WhatsApp',
-      date_created: dateCreated,
+      // date_created: dateCreated,
+      date_created: moment().format("YYYY-MM-DDTHH:mm:ss"),
       status: 'processing',
       billing: {
         first_name: firstName,
@@ -148,13 +158,18 @@ export const useOrders = () => {
         id: uuidv4(),
         name: waOrder.items,
         quantity: 1,
-        total: totalNumber.toString()
+        // total: totalNumber.toString()
+        total: finalAmount
       }],
-      customer_note: `Special Note: ${waOrder.note}\nImportant Note: ${waOrder.importantNote}`,
+      // customer_note: `Special Note: ${waOrder.note}\nImportant Note: ${waOrder.importantNote}`,
+      customer_note: isValidNote("note") ? `${waOrder.note.trim()}` : (isValidNote("importantNote") ? `${waOrder.importantNote.trim()}` : 'N/A'),
       payment_method_title: 'Manual Order',
-      total: totalNumber.toString(),
+      // total: totalNumber.toString(),
+      total: finalAmount,
       currency: 'AED',
     };
+    
+    console.log(newOrder);
 
     await set(child(ordersRef, newId), newOrder);
   }, []);
