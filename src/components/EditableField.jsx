@@ -88,7 +88,14 @@ const EditableField = ({ initialValue, onSave, fieldName, orderId, isDuplicatePh
 
     return (
         <div
-            onClick={() => !disabled && !['billing.phone', 'mobile'].includes(fieldName) && setIsEditing(true)}
+            onClick={() => {
+              if (value) {
+                navigator.clipboard.writeText(value)
+                .then(() => console.log("copied:" + value))
+                .catch(err => console.error("failed to copy:", err))
+              }
+              !disabled && !['billing.phone', 'mobile'].includes(fieldName) && setIsEditing(true)
+            }}
             className={`${!value || value.trim === 'N/A' ? 'hidden' : ''} group relative rounded p-1 -m-1 transition-colors flex items-center justify-between ${!disabled ? 'cursor-pointer hover:bg-white/5 dark:hover:bg-white/10' : 'cursor-not-allowed'} ${isDuplicatePhone ? 'text-red-400' : ''}`}
             title={fieldName}
         >
