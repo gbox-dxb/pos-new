@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { DateRangePicker } from "@/components/DateRangePicker.jsx";
 
 const TopProducts = ({ orders, stores }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,7 +53,7 @@ const TopProducts = ({ orders, stores }) => {
         filtered = filtered.filter(order => order.store_id === storeFilter);
     }
 
-    if (dateFilter !== 'all') {
+    /*if (dateFilter !== 'all') {
         const now = new Date();
         let filterDate = new Date();
         if (dateFilter === 'today') {
@@ -62,6 +64,21 @@ const TopProducts = ({ orders, stores }) => {
             filterDate.setDate(now.getDate() - 30);
         }
         filtered = filtered.filter(order => new Date(order.date_created) >= filterDate);
+    }*/
+    
+    if (dateFilter?.from) {
+      const fromDate = new Date(dateFilter.from);
+      fromDate.setHours(0, 0, 0, 0);
+      
+      const toDate = dateFilter.to ? new Date(dateFilter.to) : new Date(dateFilter.from);
+      toDate.setHours(23, 59, 59, 999);
+      
+      filtered = filtered.filter(order => {
+        if (!order.date_created) return false;
+        
+        const orderDate = new Date(order.date_created);
+        return orderDate >= fromDate && orderDate <= toDate;
+      });
     }
 
     return filtered;
@@ -83,6 +100,7 @@ const TopProducts = ({ orders, stores }) => {
               quantity: 0,
             };
             existingProduct.quantity += item.quantity;
+            existingProduct['date_created'] = order.date_created;
             productCounts.set(productId, existingProduct);
           }
         });
@@ -103,7 +121,7 @@ const TopProducts = ({ orders, stores }) => {
       .sort((a, b) => b.quantity - a.quantity)
       .slice(0, 50);
   }, [filteredOrders, searchTerm]);
-
+  
   const resetFilters = () => {
       setSearchTerm('');
       setStoreFilter('all');
@@ -166,8 +184,10 @@ const TopProducts = ({ orders, stores }) => {
                             ))}
                         </SelectContent>
                     </Select>
-                    
-                    <Select value={dateFilter} onValueChange={setDateFilter}>
+                  
+                    <DateRangePicker date={dateFilter} onDateChange={setDateFilter} />
+                  
+                    {/*<Select value={dateFilter} onValueChange={setDateFilter}>
                         <SelectTrigger className="w-full lg:w-[150px]">
                             <SelectValue placeholder="Date" />
                         </SelectTrigger>
@@ -178,7 +198,7 @@ const TopProducts = ({ orders, stores }) => {
                                 </SelectItem>
                             ))}
                         </SelectContent>
-                    </Select>
+                    </Select>*/}
                 </div>
 
                 <div className="flex items-center gap-2 w-full lg:w-auto">
@@ -198,6 +218,7 @@ const TopProducts = ({ orders, stores }) => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[80px]">Rank</TableHead>
+                  <TableHead className="w-[250px]">DateCreated</TableHead>
                   <TableHead>Product</TableHead>
                   <TableHead className="w-[150px]">SKU</TableHead>
                   <TableHead className="text-right w-[150px]">Units Sold</TableHead>
@@ -213,6 +234,7 @@ const TopProducts = ({ orders, stores }) => {
                     <TableCell className="font-bold text-lg text-muted-foreground">
                       #{index + 1}
                     </TableCell>
+                    <TableCell className="font-medium text-foreground">{moment(product.date_created).format("MMM DD, YYYY, hh:mm A")}</TableCell>
                     <TableCell className="font-medium text-foreground">{product.name}</TableCell>
                     <TableCell className="text-muted-foreground">{product.sku}</TableCell>
                     <TableCell className="text-right font-bold text-primary text-lg">
