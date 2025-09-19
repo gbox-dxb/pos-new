@@ -87,9 +87,9 @@ const EditableField = ({ initialValue, onSave, fieldName, orderId, isDuplicatePh
     }
 
     return (
-        <div 
-            onClick={() => !disabled && setIsEditing(true)} 
-            className={`group relative rounded p-1 -m-1 transition-colors flex items-center justify-between ${!disabled ? 'cursor-pointer hover:bg-white/5 dark:hover:bg-white/10' : 'cursor-not-allowed'} ${isDuplicatePhone ? 'text-red-400' : ''}`}
+        <div
+            onClick={() => !disabled && !['billing.phone', 'mobile'].includes(fieldName) && setIsEditing(true)}
+            className={`${!value || value.trim === 'N/A' ? 'hidden' : ''} group relative rounded p-1 -m-1 transition-colors flex items-center justify-between ${!disabled ? 'cursor-pointer hover:bg-white/5 dark:hover:bg-white/10' : 'cursor-not-allowed'} ${isDuplicatePhone ? 'text-red-400' : ''}`}
             title={fieldName}
         >
             <span className="min-h-[20px] flex items-center">{value || <span className="text-muted-foreground/50">N/A</span>}</span>
@@ -109,7 +109,7 @@ const EditableField = ({ initialValue, onSave, fieldName, orderId, isDuplicatePh
                                 <PhoneOutgoing className="h-3 w-3 text-green-400" />
                             </Button>
                         )}
-                        {!disabled && <Edit className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />}
+                        {!disabled && !['billing.phone', 'mobile'].includes(fieldName) && <Edit className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />}
                     </>
                 )}
             </div>
