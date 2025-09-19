@@ -135,9 +135,9 @@ export const useOrders = () => {
       return !!(value && !/^[-\s]+$/.test(value));
     };
     const extractNumber = (str) => {
-      let empty = !/^[-\s]+$/.test(str)
+      let empty = !/^[-\s]+$/.test(str);
       if (!str || !empty) return null;
-      const num = parseInt(str.replace(/\D/g, ""), 10);
+      const num = parseFloat(str.replace(/[^0-9.]/g, ""));
       return isNaN(num) ? null : num;
     };
     const finalAmount = (extractNumber(waOrder.totalPayment) || extractNumber(waOrder.price)).toString();
@@ -172,7 +172,7 @@ export const useOrders = () => {
       currency: 'AED',
     };
     
-    console.log(newOrder);
+    // console.log(newOrder);
 
     await set(child(ordersRef, newId), newOrder);
   }, []);
