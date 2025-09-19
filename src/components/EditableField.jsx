@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Check, X, Edit, Loader2, PhoneOutgoing } from 'lucide-react';
+import { Check, X, Edit, Loader2, PhoneOutgoing, MessageCircle } from 'lucide-react';
 
 const EditableField = ({ initialValue, onSave, fieldName, orderId, isDuplicatePhone, disabled = false }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -102,11 +102,11 @@ const EditableField = ({ initialValue, onSave, fieldName, orderId, isDuplicatePh
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-6 w-6 opacity-0 group-hover:opacity-100"
+                                className="h-6 w-12 bg-gray-200 dark:bg-gray-800"
                                 onClick={handleWhatsAppClick}
                                 title="Open in WhatsApp"
                             >
-                                <PhoneOutgoing className="h-3 w-3 text-green-400" />
+                                <MessageCircle className="h-3 w-3 text-green-400" />
                             </Button>
                         )}
                         {!disabled && !['billing.phone', 'mobile'].includes(fieldName) && <Edit className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />}

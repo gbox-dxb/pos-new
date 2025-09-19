@@ -165,7 +165,7 @@ export const useOrders = () => {
         total: finalAmount
       }],
       // customer_note: `Special Note: ${waOrder.note}\nImportant Note: ${waOrder.importantNote}`,
-      customer_note: isValidNote("note") ? `${waOrder.note.trim()}` : (isValidNote("importantNote") ? `${waOrder.importantNote.trim()}` : 'N/A'),
+      customer_note: isValidNote("note") ? `${waOrder.note.trim()}` : (isValidNote("importantNote") ? `${waOrder.importantNote.trim()}` : ''),
       payment_method_title: 'Manual Order',
       // total: totalNumber.toString(),
       total: finalAmount,
