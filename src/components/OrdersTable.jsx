@@ -114,6 +114,9 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           {formatDate(order.date_created)}
         </div>
       </td>}
+      {visibleColumns.ref && <td>
+        <div className="text-xs text-gray-500 font-bold text-base">{order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id }</div>
+      </td>}
       {visibleColumns.status && <td>
         <Badge variant="outline" className={`status-badge ${getStatusColor(order.status)}`}>
           {order.status.replace('-', ' ').toUpperCase()}
@@ -290,6 +293,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
               </th>
               {screenOptions.visibleColumns.order && <th>Order</th>}
               {screenOptions.visibleColumns.date && <th>Date</th>}
+              {screenOptions.visibleColumns.ref && <th>Reference</th>}
               {screenOptions.visibleColumns.status && <th>Status</th>}
               {screenOptions.visibleColumns.billing && <th>Billing</th>}
               {screenOptions.visibleColumns.shipping && <th>Ship to</th>}

@@ -10,6 +10,7 @@ const ScreenOptions = ({ visibleColumns, onColumnChange, itemsPerPage, onItemsPe
     const allColumns = [
         { id: 'order', label: 'Order' },
         { id: 'date', label: 'Date' },
+        { id: 'ref', label: 'Reference' },
         { id: 'status', label: 'Status' },
         { id: 'billing', label: 'Billing' },
         { id: 'shipping', label: 'Ship to' },
