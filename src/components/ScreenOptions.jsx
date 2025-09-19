@@ -22,7 +22,7 @@ const ScreenOptions = ({ visibleColumns, onColumnChange, itemsPerPage, onItemsPe
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className={"w-48"}>
                     <Settings2 className="h-4 w-4 mr-2" />
                     Screen Options
                 </Button>
