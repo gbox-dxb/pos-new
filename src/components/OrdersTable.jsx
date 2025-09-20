@@ -145,28 +145,19 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       {visibleColumns.items && <td className="text-xs">
         <ul className="space-y-1">
           {order.line_items?.map(item => (
-            /*<li key={item.id}>
-              ({item.quantity}x)
-              <a
-                href={`${order.store_url}?p=${item.product_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-1 text-primary hover:underline inline-flex items-center gap-1"
-              >
-                {item.name} <ExternalLink className="h-3 w-3" />
-              </a>
-            </li>*/
-            <li key={item.id} className="flex items-center space-x-2">
-              <div className="flex items-center">
-                <a
-                  href={`${order.store_url}?p=${item.product_id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-1 text-primary hover:underline inline-flex items-center gap-1"
-                >
-                  {item.name} <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
+            <li key={item.id}>
+              {
+                order.store_name.toLowerCase() === 'whatsapp' ? (item.name) : (
+                  <a
+                    href={`${order.store_url}?p=${item.product_id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-1 text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    {item.name} <ExternalLink className="h-3 w-3" />
+                  </a>
+                )
+              }
             </li>
           ))}
         </ul>
