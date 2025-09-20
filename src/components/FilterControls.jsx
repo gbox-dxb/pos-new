@@ -14,9 +14,9 @@ import {
 import ScreenOptions from '@/components/ScreenOptions';
 import { DateRangePicker } from '@/components/DateRangePicker';
 
-const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenOptions, onScreenOptionsChange }) => {
+const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenOptions, onScreenOptionsChange,statusFilter, setStatusFilter }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState('all');
+   
     const [storeFilter, setStoreFilter] = useState('all');
     const [dateRange, setDateRange] = useState(undefined);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import OrdersTable from '@/components/OrdersTable';
@@ -42,6 +42,7 @@ const DashboardTabs = ({
     onScreenOptionsChange,
 }) => {
     const { permissions, isAdmin } = useAccessControl();
+    const [statusFilter, setStatusFilter] = useState('all');
 
     const onDragEnd = (result) => {
         if (!result.destination || !isAdmin) return;
@@ -98,7 +99,10 @@ const DashboardTabs = ({
             
             {permissions.tabs.orders !== 'none' && <TabsContent value="orders">
                 <div className="space-y-6">
-                    <OrderStats orders={orders} />
+                    <OrderStats
+                        orders={orders}
+                        setStatusFilter={setStatusFilter} // 👈 pass down
+                    />
                     <FilterControls
                         orders={sortedOrders}
                         stores={stores}
@@ -106,6 +110,8 @@ const DashboardTabs = ({
                         filteredCount={orders.length}
                         screenOptions={screenOptions}
                         onScreenOptionsChange={onScreenOptionsChange}
+                        statusFilter={statusFilter}          // 👈 pass down
+                        setStatusFilter={setStatusFilter}    // 👈 pass down
                     />
                     <Card>
                         <CardContent className="p-0">
