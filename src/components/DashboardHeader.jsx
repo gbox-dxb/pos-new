@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Download, RefreshCw, ShoppingCart, DollarSign, Upload } from 'lucide-react';
+import {Plus, Download, RefreshCw, ShoppingCart, DollarSign, Upload, Lock} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/ThemeProvider';
 import { Card } from '@/components/ui/card';
@@ -18,6 +18,24 @@ const DashboardHeader = ({
 }) => {
   const { theme } = useTheme();
   const { permissions } = useAccessControl();
+  
+  const logout = () => {
+    // Clear localStorage
+    localStorage.clear();
+    
+    // Clear sessionStorage
+    sessionStorage.clear();
+    
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+      .replace(/^ +/, "")
+      .replace(/=.*/, "=;expires=" + new Date(0).toUTCString() + ";path=/");
+    });
+    
+    // Optional: redirect to login page
+    window.location.href = "/login";
+  }
 
   return <motion.div initial={{
     opacity: 0,
@@ -71,6 +89,10 @@ const DashboardHeader = ({
               </Button>
             </>
           )}
+          <Button onClick={logout} variant="secondary">
+            <Lock className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Logout
+          </Button>
         </div>
       </div>
     </motion.div>;
