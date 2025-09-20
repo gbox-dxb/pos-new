@@ -8,15 +8,17 @@ const OrderStats = ({ orders = [], setStatusFilter }) => {
     const totalOrders = orders.length;
     const pendingOrders = orders.filter(order => order.status === 'pending').length;
     const processingOrders = orders.filter(order => order.status === 'processing').length;
+    const onholdOrders = orders.filter(order => order.status === 'on-hold').length;
     const completedOrders = orders.filter(order => order.status === 'completed').length;
     const cancelledOrders = orders.filter(order => ['cancelled', 'failed', 'refunded'].includes(order.status)).length;
 
     return {
       totalOrders,
       pendingOrders,
+      onholdOrders,
       processingOrders,
       completedOrders,
-      cancelledOrders
+      cancelledOrders,
     };
   }, [orders]);
 
@@ -27,9 +29,15 @@ const OrderStats = ({ orders = [], setStatusFilter }) => {
       icon: ShoppingCart,
       color: 'text-blue-500',
     },
+    /*{
+      title: 'Pending',
+      value: stats.pendingOrders.toLocaleString(),
+      icon: Clock,
+      color: 'text-orange-500',
+    },*/
     {
       title: 'Out for Delivery',
-      value: stats.pendingOrders.toLocaleString(),
+      value: stats.onholdOrders.toLocaleString(),
       icon: Clock,
       color: 'text-orange-500',
     },
@@ -57,7 +65,7 @@ const OrderStats = ({ orders = [], setStatusFilter }) => {
     // picked from FilterControls.jsx
     const orderStatuses = [
       { value: 'all', label: 'All Statuses' },
-      { value: 'pending', label: 'Out for Delivery' },
+      { value: 'pending', label: 'Pending' },
       { value: 'processing', label: 'Processing' },
       { value: 'on-hold', label: 'Out for Delivery' },
       { value: 'completed', label: 'Completed' },
