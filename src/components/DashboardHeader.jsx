@@ -34,7 +34,7 @@ const DashboardHeader = ({
     });
     
     // Optional: redirect to login page
-    window.location.href = "/login";
+    window.location.href = "/";
   }
 
   return <motion.div initial={{

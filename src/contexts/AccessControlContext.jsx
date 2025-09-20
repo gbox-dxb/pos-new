@@ -106,7 +106,7 @@ export const AccessControlProvider = ({ children }) => {
   const logout = useCallback(() => {
     sessionStorage.removeItem('auth');
     checkAuthStatus();
-    navigate('/login');
+    navigate('/');
   }, [checkAuthStatus, navigate]);
 
   const value = { permissions, loading, isAuthenticated, isAdmin, login, logout };
