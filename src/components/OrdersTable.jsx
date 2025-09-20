@@ -148,7 +148,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
             <li key={item.id}>
               ({item.quantity}x)
               <a
-                href={`${order.store_url}/?p=${item.product_id}`}
+                href={`${order.store_url}?p=${item.product_id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="ml-1 text-primary hover:underline inline-flex items-center gap-1"
@@ -183,7 +183,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           <Button
             size="sm"
             variant="secondary"
-            onClick={() => window.open(`${order.store_url}/wp-admin/post.php?post=${order.id}&action=edit`, '_blank')}
+            onClick={() => window.open(`${order.store_url}wp-admin/post.php?post=${order.id}&action=edit`, '_blank')}
             title="View in WP Admin"
           >
             <Eye className="h-3 w-3" />
