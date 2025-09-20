@@ -640,7 +640,7 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-10">
+                    <TableHead className="">
                       <Checkbox
                         checked={isAllSelected}
                         onCheckedChange={handleSelectAll}

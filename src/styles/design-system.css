@@ -108,65 +108,67 @@
   @apply bg-primary/5;
 }
 
-/* Column Widths */
+/*
+!* Column Widths *!
 .woo-table th:nth-child(1),
 .woo-table td:nth-child(1) {
   width: 4%;
 }
 
-/* Checkbox */
+!* Checkbox *!
 .woo-table th:nth-child(2),
 .woo-table td:nth-child(2) {
   width: 8%;
 }
 
-/* Order */
+!* Order *!
 .woo-table th:nth-child(3),
 .woo-table td:nth-child(3) {
   width: 10%;
 }
 
-/* Date */
+!* Date *!
 .woo-table th:nth-child(4),
 .woo-table td:nth-child(4) {
   width: 8%;
 }
 
-/* Status */
+!* Status *!
 .woo-table th:nth-child(5),
 .woo-table td:nth-child(5) {
   width: 17%;
 }
 
-/* Billing */
+!* Billing *!
 .woo-table th:nth-child(6),
 .woo-table td:nth-child(6) {
   width: 17%;
 }
 
-/* Shipping */
+!* Shipping *!
 .woo-table th:nth-child(7),
 .woo-table td:nth-child(7) {
   width: 15%;
 }
 
-/* Items */
+!* Items *!
 .woo-table th:nth-child(8),
 .woo-table td:nth-child(8) {
   width: 8%;
 }
 
-/* Payment */
+!* Payment *!
 .woo-table th:nth-child(9),
 .woo-table td:nth-child(9) {
   width: 7%;
 }
 
-/* Total */
+!* Total *!
 .woo-table th:nth-child(10),
 .woo-table td:nth-child(10) {
   width: 6%;
 }
+*/
 
 /* Actions */
 

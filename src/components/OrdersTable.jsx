@@ -94,7 +94,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       transition={{ duration: 0.3, delay: index * 0.05 }}
       className={`align-top transition-colors ${isDuplicatePhone ? 'bg-red-500/10' : ''} ${isSelected ? 'bg-primary/10' : ''}`}
     >
-      <td className="w-10 pl-4">
+      <td className="">
         <div className="flex justify-center items-center h-full">
           <Checkbox
             id={`select-${uniqueKey}`}
@@ -110,6 +110,11 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         </div>
         <div className="text-xs text-muted-foreground">{order.store_name}</div>
       </td>}
+      {visibleColumns.status && <td>
+        <Badge variant="outline" className={`status-badge ${getStatusColor(order.status)}`}>
+          {order.status.replace('-', ' ').toUpperCase()}
+        </Badge>
+      </td>}
       {visibleColumns.date && <td>
         <div className="text-sm">
           {formatDate(order.date_created)}
@@ -117,11 +122,6 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       </td>}
       {visibleColumns.ref && <td>
         <div className="text-xs text-gray-500 font-bold text-base">{order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id }</div>
-      </td>}
-      {visibleColumns.status && <td>
-        <Badge variant="outline" className={`status-badge ${getStatusColor(order.status)}`}>
-          {order.status.replace('-', ' ').toUpperCase()}
-        </Badge>
       </td>}
       {visibleColumns.billing && <td className="text-xs">
         <BillingAddress address={order.billing} meta_data={order?.meta_data} />
@@ -164,7 +164,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         </div>
       </td>}
       {visibleColumns.actions && <td>
-        <div className="flex gap-2">
+        <div className="flex align-middle justify-center items-center text-center gap-3">
           <Button
             size="sm"
             variant="secondary"
@@ -282,7 +282,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
         <table className="woo-table">
           <thead>
             <tr>
-              <th className="w-10 pl-4">
+              <th style={{ width: "45px" }}>
                 <Checkbox
                   id="select-all"
                   checked={isAllOnPageSelected}
@@ -292,16 +292,16 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
                   disabled={!canEdit}
                 />
               </th>
-              {screenOptions.visibleColumns.order && <th>Order</th>}
-              {screenOptions.visibleColumns.date && <th>Date</th>}
-              {screenOptions.visibleColumns.ref && <th>Reference</th>}
-              {screenOptions.visibleColumns.status && <th>Status</th>}
+              {screenOptions.visibleColumns.order && <th style={{ width: "120px" }}>Order</th>}
+              {screenOptions.visibleColumns.status && <th style={{ width: "130px" }}>Status</th>}
+              {screenOptions.visibleColumns.date && <th style={{ width: "120px" }}>Date</th>}
+              {screenOptions.visibleColumns.ref && <th style={{ width: "120px" }}>Reference</th>}
               {screenOptions.visibleColumns.billing && <th>Billing</th>}
               {screenOptions.visibleColumns.shipping && <th>Ship to</th>}
               {screenOptions.visibleColumns.items && <th>Items & Notes</th>}
-              {screenOptions.visibleColumns.payment && <th>Payment</th>}
-              {screenOptions.visibleColumns.total && <th>Total</th>}
-              {screenOptions.visibleColumns.actions && <th>Actions</th>}
+              {screenOptions.visibleColumns.payment && <th style={{ width: "140px" }}>Payment</th>}
+              {screenOptions.visibleColumns.total && <th style={{ width: "100px" }}>Total</th>}
+              {screenOptions.visibleColumns.actions && <th className="flex justify-center items-center">Actions</th>}
             </tr>
           </thead>
           <tbody>

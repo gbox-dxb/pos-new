@@ -229,10 +229,10 @@ const WooCommerceDashboardComponent = () => {
   const handleScreenOptionsChange = (key, value) => {
     const newOptions = { ...screenOptions, [key]: value };
     setScreenOptions(newOptions);
-    if (isAdmin) {
+    /*if (isAdmin) {
       const screenOptionsRef = ref(database, 'settings/screenOptions');
       set(screenOptionsRef, newOptions);
-    }
+    }*/
   };
 
   const handleOpenStoreModal = (store = null) => {
