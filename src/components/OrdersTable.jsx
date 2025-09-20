@@ -158,11 +158,6 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
             </li>*/
             <li key={item.id} className="flex items-center space-x-2">
               <div className="flex items-center">
-                <EditableField initialValue={item.quantity} onSave={handleFieldSave} fieldName="item.quantity" orderId={order.id} disabled={!canEdit} />
-                <span>x</span>
-              </div>
-              
-              <div className="flex items-center">
                 <a
                   href={`${order.store_url}?p=${item.product_id}`}
                   target="_blank"
