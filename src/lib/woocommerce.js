@@ -366,8 +366,6 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
     }
     
     if (visibleColumns.items) {
-      row['Items Count'] = order.line_items?.length || 0;
-      
       if(order.store_id === "whatsapp-order") {
         row['Items'] = order.line_items?.map(item => `${item.name}`).join('\n') || '';
       } else {
@@ -378,6 +376,7 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
       row['Customer Note'] = order.customer_note;
     }
     
+    row['Items Count'] = order.line_items?.length || 0;
     row['Current Date'] = moment().format("MMM DD, YYYY");
     row['Current Time'] = moment().format("hh:mm A");
     
