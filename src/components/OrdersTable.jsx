@@ -41,9 +41,10 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
   const handleFieldSave = (orderId, data) => {
     return onUpdateOrderDetails(order.store_id, orderId, data);
   };
-
-  const BillingAddress = ({ address }) => {
+  
+  const BillingAddress = ({ address, meta_data }) => {
     if (!address) return 'N/A';
+    const city = meta_data?.find(item => item.key === '_billing_area')?.value || 'N/A';
     return (
       <div className="space-y-1">
         <div className="flex gap-1">
@@ -54,7 +55,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         <EditableField initialValue={address.address_1} onSave={handleFieldSave} fieldName="billing.address_1" orderId={order.id} disabled={!canEdit} />
         <EditableField initialValue={address.address_2} onSave={handleFieldSave} fieldName="billing.address_2" orderId={order.id} disabled={!canEdit} />
         <div className="flex gap-1">
-          <EditableField initialValue={address.city} onSave={handleFieldSave} fieldName="billing.city" orderId={order.id} disabled={!canEdit} />
+          <EditableField initialValue={address.city || city} onSave={handleFieldSave} fieldName="billing.city" orderId={order.id} disabled={!canEdit} />
           <EditableField initialValue={address.state} onSave={handleFieldSave} fieldName="billing.state" orderId={order.id} disabled={!canEdit} />
         </div>
         <div className="flex gap-1">
@@ -123,7 +124,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         </Badge>
       </td>}
       {visibleColumns.billing && <td className="text-xs">
-        <BillingAddress address={order.billing} />
+        <BillingAddress address={order.billing} meta_data={order?.meta_data} />
       </td>}
       {visibleColumns.shipping && <td className="text-xs"><ShippingAddress address={order.shipping} /></td>}
       {visibleColumns.items && <td className="text-xs">
