@@ -23,6 +23,16 @@ const parseValue = (text, regex) => {
   return match ? match[1].trim() : '---';
 };
 
+function parseImportantNote(text) {
+  // match only the same line where "Important Note:" appears
+  const match = text.match(/^\s*Important Note:\s*([^\r\n]*)/im);
+  
+  if (!match) return null;
+  
+  const value = match[0].trim();
+  return value && value.length > 0 ? value.split(/Important Note:/i)[0] : null;
+}
+
 const parseWhatsAppOrders = (text) => {
   const orderBlocks = text.split(/Ref#/).slice(1);
 
@@ -54,7 +64,7 @@ const parseWhatsAppOrders = (text) => {
       note: parseValue(fullBlock, /Special Note\s*:\s*(.*)/),
       delivery: parseValue(fullBlock, /Delivery:\s*(.*)/),
       totalPayment: parseValue(fullBlock, /TOTAL PAYMENT\s*:\s*(.*)/i),
-      importantNote: parseValue(fullBlock, /Important Note:\s*(.*)/i)
+      importantNote: parseImportantNote(fullBlock),
     };
   });
 };
