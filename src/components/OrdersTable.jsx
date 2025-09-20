@@ -144,7 +144,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           ))}
         </ul>
         {order.customer_note && (
-          <div className="mt-2 p-2 bg-yellow-500/10 border-l-2 border-yellow-400 text-yellow-300 text-xs">
+          <div className="mt-2 p-2 bg-red-500/10 border-l-2 border-red-400 text-red-600 text-xs">
             <strong>Note:</strong> {order.customer_note}
           </div>
         )}
