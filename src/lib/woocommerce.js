@@ -343,6 +343,7 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
       row['Billing City'] = billing.city || city;
       row['Billing Address 2'] = billing.address_2;
       row['Billing Country'] = 'United Arab Emirates' // billing.country;
+      row['Payment Type'] = 'Cash'
     }
     
     if (visibleColumns.total) {
