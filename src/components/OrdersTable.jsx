@@ -9,8 +9,11 @@ import EditableField from '@/components/EditableField';
 import Pagination from '@/components/Pagination';
 import { generateOrderPDF } from '@/lib/pdfGenerator';
 import { useAccessControl } from '@/contexts/AccessControlContext';
+import { useToast } from '@/components/ui/use-toast';
 
 const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChange, onUpdateOrderDetails, visibleColumns }) => {
+  const { toast } = useToast();
+  
   const { permissions } = useAccessControl();
   const canEdit = permissions.tabs.orders === 'edit';
 
@@ -120,7 +123,19 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           {formatDate(order.date_created)}
         </div>
       </td>}
-      {visibleColumns.ref && <td>
+      {visibleColumns.ref && <td className={'cursor-pointer'} onClick={() => {
+        let ref = order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id;
+        if (ref) {
+          navigator.clipboard.writeText(ref)
+          .then(() => {
+            toast({
+              title: `Copied ${ref}`,
+              description: `Successfully Copied To Clipboard!`
+            });
+          })
+          .catch(err => console.error("failed to copy:", err))
+        }
+      }}>
         <div className="text-xs text-gray-500 font-bold text-base">{order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id }</div>
       </td>}
       {visibleColumns.billing && <td className="text-xs">
