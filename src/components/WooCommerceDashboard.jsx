@@ -218,7 +218,7 @@ const WooCommerceDashboardComponent = () => {
     if (currencies.length === 1 && currencies[0]) {
       return totalRevenue.toLocaleString('en-US', { style: 'currency', currency: currencies[0], minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    return `${totalRevenue.toLocaleString('en-US', { currency: 'AED', style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2 })} (mixed)`;
+    return `${totalRevenue.toLocaleString('en-US', { currency: 'AED', style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2 })} `;
   }, [filteredOrders]);
 
   const handleSetFilteredOrders = useCallback((newFilteredOrders) => {
