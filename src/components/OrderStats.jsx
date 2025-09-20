@@ -28,7 +28,7 @@ const OrderStats = ({ orders = [], setStatusFilter }) => {
       color: 'text-blue-500',
     },
     {
-      title: 'Pending',
+      title: 'Out for Delivery',
       value: stats.pendingOrders.toLocaleString(),
       icon: Clock,
       color: 'text-orange-500',
@@ -57,7 +57,7 @@ const OrderStats = ({ orders = [], setStatusFilter }) => {
     // picked from FilterControls.jsx
     const orderStatuses = [
       { value: 'all', label: 'All Statuses' },
-      { value: 'pending', label: 'Pending' },
+      { value: 'pending', label: 'Out for Delivery' },
       { value: 'processing', label: 'Processing' },
       { value: 'on-hold', label: 'Out for Delivery' },
       { value: 'completed', label: 'Completed' },

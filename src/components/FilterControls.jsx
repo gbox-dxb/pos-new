@@ -23,7 +23,7 @@ const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenO
     const orderStatuses = useMemo(() => [
         { value: 'all', label: 'All Statuses' },
         { value: 'delete_permanently', label: 'Delete Permanently' },
-        { value: 'pending', label: 'Pending' },
+        { value: 'pending', label: 'Out for Delivery' },
         { value: 'processing', label: 'Processing' },
         { value: 'on-hold', label: 'On Hold' },
         { value: 'completed', label: 'Completed' },
