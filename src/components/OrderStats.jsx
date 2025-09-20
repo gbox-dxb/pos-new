@@ -65,7 +65,7 @@ const OrderStats = ({ orders = [], setStatusFilter }) => {
     // picked from FilterControls.jsx
     const orderStatuses = [
       { value: 'all', label: 'All Statuses' },
-      { value: 'pending', label: 'Pending' },
+      // { value: 'pending', label: 'Pending' },
       { value: 'processing', label: 'Processing' },
       { value: 'on-hold', label: 'Out for Delivery' },
       { value: 'completed', label: 'Completed' },
