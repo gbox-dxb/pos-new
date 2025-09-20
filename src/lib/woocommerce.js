@@ -1,3 +1,4 @@
+import moment from "moment";
 
 import { toast } from '@/components/ui/use-toast';
 import Papa from 'papaparse';
@@ -317,7 +318,7 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
       row['Billing Mobile'] = billing.phone;
       row['Billing City'] = billing.city || city;
       row['Billing Address 2'] = billing.address_2;
-      row['Billing Country'] = billing.country;
+      row['Billing Country'] = 'United Arab Emirates' // billing.country;
       row['Billing Company'] = billing.company;
     }
     
@@ -342,9 +343,20 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
     }
     
     if (visibleColumns.items) {
-      row['Items'] = order.line_items?.map(item => `${item.quantity}x ${item.name} (SKU: ${item.sku || 'N/A'})`).join('; ') || '';
+      row['Items Count'] = order.line_items?.length || 0;
+      
+      if(order.store_id === "whatsapp-order") {
+        row['Items'] = order.line_items?.map(item => `${item.name}`).join('\n') || '';
+      } else {
+        // ✅ Show quantity
+        row['Items'] = order.line_items?.map(item => `(Qty: ${item.quantity})-${item.name}`).join('\n') || '';
+      }
+      
       row['Customer Note'] = order.customer_note;
     }
+    
+    row['Current Date'] = moment().format("MMM DD, YYYY");
+    row['Current Time'] = moment().format("hh:mm A");
     
     row['Store Name'] = order.store_name;
     
