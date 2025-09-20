@@ -307,6 +307,7 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
 
     // Always include store name for re-importing
     row['Store'] = order.store_name;
+    if (visibleColumns.status) row['Status'] = order.status;
     
     const city = order?.meta_data?.find(item => item.key === '_billing_area')?.value || 'N/A';
     
@@ -319,7 +320,6 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
       row['Billing City'] = billing.city || city;
       row['Billing Address 2'] = billing.address_2;
       row['Billing Country'] = 'United Arab Emirates' // billing.country;
-      row['Billing Company'] = billing.company;
     }
     
     if (visibleColumns.total) {
@@ -362,9 +362,9 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
     
     if (visibleColumns.order) row['Order ID'] = order.id;
     if (visibleColumns.date) row['Date'] = new Date(order.date_created).toISOString();
-    if (visibleColumns.status) row['Status'] = order.status;
     
     if (visibleColumns.billing) {
+      row['Billing Company'] = billing.company;
       row['Billing Postcode'] = billing.postcode;
       row['Billing State'] = billing.state;
       row['Billing Email'] = billing.email;
