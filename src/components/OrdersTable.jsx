@@ -282,7 +282,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
         <table className="woo-table">
           <thead>
             <tr>
-              <th style={{ width: "45px" }}>
+              <th style={{ width: "2%" }}>
                 <Checkbox
                   id="select-all"
                   checked={isAllOnPageSelected}
@@ -301,7 +301,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
               {screenOptions.visibleColumns.items && <th>Items & Notes</th>}
               {screenOptions.visibleColumns.payment && <th style={{ width: "140px" }}>Payment</th>}
               {screenOptions.visibleColumns.total && <th style={{ width: "100px" }}>Total</th>}
-              {screenOptions.visibleColumns.actions && <th className="flex justify-center items-center">Actions</th>}
+              {screenOptions.visibleColumns.actions && <th style={{ width: "12%", textAlign: "center" }}>Actions</th>}
             </tr>
           </thead>
           <tbody>
