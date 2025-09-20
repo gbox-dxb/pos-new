@@ -48,11 +48,20 @@ const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenO
         let filtered = [...orders];
 
         if (searchTerm) {
-            const lowercasedTerm = searchTerm.toLowerCase();
-            filtered = filtered.filter(order => {
-                const orderString = JSON.stringify(order).toLowerCase();
-                return orderString.includes(lowercasedTerm);
-            });
+          const terms = searchTerm
+          .split(",")
+          .map((t) => t.trim().toLowerCase())
+          .filter(Boolean);
+          
+          // const lowercasedTerm = searchTerm.toLowerCase();
+          filtered = filtered.filter(order => {
+            // const orderString = JSON.stringify(order).toLowerCase();
+            // return orderString.includes(lowercasedTerm);
+            const refNormal = (order.store_name+''+order.id).toLowerCase();  // for search with PDXB12277, dxb112275
+            const orderString = JSON.stringify(order).toLowerCase();
+            // ✅ Match if ANY of the terms is found
+            return terms.some((term) => (term === refNormal) || orderString.includes(term));
+          });
         }
 
         if (statusFilter !== 'all') {
