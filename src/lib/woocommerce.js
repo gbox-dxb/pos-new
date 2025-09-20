@@ -290,6 +290,29 @@ export const updateOrderDetails = async ({ storeId, orderId, data, stores, toast
   }
 };
 
+const formatMobile = (input) => {
+  if (input == null) return null;
+  
+  // 1. Convert to string
+  let str = String(input);
+  
+  // 2. Remove all non-digits
+  let digits = str.replace(/\D/g, "");
+  
+  // 3. Remove UAE country code if present
+  if (digits.startsWith("971")) {
+    digits = digits.slice(3);
+  }
+  
+  // 4. Remove leading 0 if present
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+  
+  // 5. Return cleaned subscriber number
+  return digits;
+}
+
 export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
   if (!ordersToExport || ordersToExport.length === 0) {
     toast({
@@ -316,7 +339,7 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
       row['Billing Last Name'] = billing.last_name;
       row['Billing Address 1'] = billing.address_1;
       row['Billing Phone'] = billing.phone;
-      row['Billing Mobile'] = billing.phone;
+      row['Billing Mobile'] = formatMobile(billing.phone);
       row['Billing City'] = billing.city || city;
       row['Billing Address 2'] = billing.address_2;
       row['Billing Country'] = 'United Arab Emirates' // billing.country;
