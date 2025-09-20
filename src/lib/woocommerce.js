@@ -307,13 +307,15 @@ export const exportOrdersToExcel = (ordersToExport, visibleColumns, toast) => {
     // Always include store name for re-importing
     row['Store'] = order.store_name;
     
+    const city = order?.meta_data?.find(item => item.key === '_billing_area')?.value || 'N/A';
+    
     if (visibleColumns.billing) {
       row['Billing First Name'] = billing.first_name;
       row['Billing Last Name'] = billing.last_name;
       row['Billing Address 1'] = billing.address_1;
       row['Billing Phone'] = billing.phone;
       row['Billing Mobile'] = billing.phone;
-      row['Billing City'] = billing.city;
+      row['Billing City'] = billing.city || city;
       row['Billing Address 2'] = billing.address_2;
       row['Billing Country'] = billing.country;
       row['Billing Company'] = billing.company;

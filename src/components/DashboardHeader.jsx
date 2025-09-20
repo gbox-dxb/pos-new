@@ -62,11 +62,11 @@ const DashboardHeader = ({
           {permissions.importExport && (
             <>
               <Button onClick={onImport} variant="outline">
-                <Upload className="h-4 w-4 mr-2" />
+                <Download className="h-4 w-4 mr-2" />
                 Import
               </Button>
               <Button onClick={onExport} disabled={ordersCount === 0} variant="outline">
-                <Download className="h-4 w-4 mr-2" />
+                <Upload className="h-4 w-4 mr-2" />
                 Export
               </Button>
             </>
