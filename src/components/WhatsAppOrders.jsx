@@ -40,7 +40,7 @@ function parseNote(text, noteType) {
       : '';
   })
   const note = results.filter(Boolean)
-  return note[0] || '';
+  return note[0] || '---';
 }
 
 const parseWhatsAppOrders = (text) => {
