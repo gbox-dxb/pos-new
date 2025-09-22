@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getDatabase, ref, remove } from "firebase/database";
 
 const BulkActionsToolbar = ({
   selectedCount,
@@ -19,6 +20,7 @@ const BulkActionsToolbar = ({
   isUpdating,
   onTrashSelected,
   isTrashView,
+  selectedRows
 }) => {
   const [selectedStatus, setSelectedStatus] = React.useState('');
   const statuses = [
@@ -30,13 +32,39 @@ const BulkActionsToolbar = ({
     'refunded',
   ];
 
-  const handleUpdateClick = () => {
+  const handleUpdateClick = async () => {
     if (selectedStatus) {
-      if (selectedStatus === 'trash') {
+      switch (selectedStatus) {
+        case 'trash': {
+          onTrashSelected();
+          break;
+        }
+        case 'restore': {
+          onUpdateStatus(selectedStatus);
+          break;
+        }
+        case 'delete_permanently': {
+          const trashIds = new Set(selectedRows);
+          const db = getDatabase();
+          for (const id of trashIds) {
+            try {
+              await remove(ref(db, `orders/${id}`));
+              console.log(`Deleted order ${id}`);
+            } catch (err) {
+              console.error(`Failed to delete ${id}`);
+            }
+          }
+          break;
+        }
+        default: {
+          alert('Method Not Configured!');
+        }
+      }
+     /* if (selectedStatus === 'trash') {
         onTrashSelected(); 
       } else {
         onUpdateStatus(selectedStatus);
-      }
+      }*/
     }
   };
 

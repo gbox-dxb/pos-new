@@ -295,6 +295,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
         onTrashSelected={onTrashSelected}
         onDeletePermanently={onDeletePermanently}
         isTrashView={isTrashView}
+        selectedRows={selectedRows}
       />}
       <div className="overflow-x-auto rounded-lg border">
         <table className="woo-table">
