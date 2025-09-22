@@ -60,7 +60,7 @@ const BulkActionsToolbar = ({
           break;
         }
         default: {
-          alert('Method Not Configured!');
+          onUpdateStatus(selectedStatus);
         }
       }
      /* if (selectedStatus === 'trash') {
