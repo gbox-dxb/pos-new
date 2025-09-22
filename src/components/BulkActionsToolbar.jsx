@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/select";
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getDatabase, ref, remove } from "firebase/database";
+import { database } from '@/lib/firebase';
+import { ref, remove } from "firebase/database";
 
 const BulkActionsToolbar = ({
   selectedCount,
@@ -45,12 +46,14 @@ const BulkActionsToolbar = ({
         }
         case 'delete_permanently': {
           const trashIds = new Set(selectedRows);
-          const db = getDatabase();
-          for (const id of trashIds) {
+          for (const uniqueKey of trashIds) {
+            let id = uniqueKey.split("-").pop()
             try {
-              await remove(ref(db, `orders/${id}`));
-              console.log(`Deleted order ${id}`);
-            } catch (err) {
+              const orderRef = ref(database, `orders/${id}`);
+              await remove(orderRef);
+              console.log(`Trash order deleted ${id}`);
+            }
+            catch (err) {
               console.error(`Failed to delete ${id}`);
             }
           }
