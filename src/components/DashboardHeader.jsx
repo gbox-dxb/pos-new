@@ -70,7 +70,7 @@ const DashboardHeader = ({
                <ShoppingCart className={`h-6 w-6 ${theme === 'dark' ? 'text-primary' : ''}`} />
             </div>
             <h1 className="text-3xl font-bold text-foreground capitalize">
-              {`Hello, ${username} :)` || 'G-BOX Admin Dashboard'}
+              {username ? `Hello, ${username} :)` : 'G-BOX Admin Dashboard'}
             </h1>
           </div>
           <p className="text-muted-foreground"></p>
