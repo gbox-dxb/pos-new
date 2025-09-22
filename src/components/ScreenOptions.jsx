@@ -11,6 +11,7 @@ const ScreenOptions = ({ visibleColumns, onColumnChange, itemsPerPage, onItemsPe
         { id: 'order', label: 'Order' },
         { id: 'date', label: 'Date' },
         { id: 'ref', label: 'Reference' },
+        { id: 'delivery_status', label: 'Delivery Status' },
         { id: 'status', label: 'Status' },
         { id: 'billing', label: 'Billing' },
         { id: 'shipping', label: 'Ship to' },

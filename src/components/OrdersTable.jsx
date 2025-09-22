@@ -11,6 +11,8 @@ import { generateOrderPDF } from '@/lib/pdfGenerator';
 import { useAccessControl } from '@/contexts/AccessControlContext';
 import { useToast } from '@/components/ui/use-toast';
 
+import axios from "axios";
+
 const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChange, onUpdateOrderDetails, visibleColumns }) => {
   const { toast } = useToast();
   
@@ -87,7 +89,122 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       </div>
     );
   };
-
+  
+  const CORS_PROXY_URL = 'https://app-cors.vercel.app/api/proxy?url=';
+  
+  const DeliveryStatus = ({ order }) => {
+    const [status, setStatus] = useState("loading"); // local status state
+    const [loading, setLoading] = useState(true);    // loading state for this order
+    const [checked, setChecked] = useState(false); // track if API was triggered
+    
+    const id =
+      order.store_id === "whatsapp-order"
+        ? order.id
+        : order.store_name.slice(-3) + "" + order.id;
+    
+    const handleCheck = () => {
+      setChecked(true);
+      setLoading(true);
+      
+      const pandaUrl = "https://app.deliverypanda.me/webservice/GetTracking";
+      const proxyUrl = `${CORS_PROXY_URL}${pandaUrl}`;
+      
+      const payload = { AwbNumber: [id] };
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          "API-KEY": "159f8f293e01fd605d3b6dbad83cada2",
+        },
+        timeout: 30000,
+      };
+      
+      axios
+      .post(proxyUrl, payload, config)
+      .then((res) => {
+        console.log("response::", res?.data);
+        setStatus(res.data.status || "Ready to Dispatch");
+      })
+      .catch((err) => {
+        console.error("Error fetching status for order:", id, err);
+        setStatus("error");
+      })
+      .finally(() => setLoading(false));
+    };
+    
+    /*useEffect(() => {
+      let isMounted = true;
+      
+      setLoading(true);
+      
+      const isOnHold = order.status === "on-hold";
+      
+      // only check onHold order
+      if(!isOnHold) return;
+      
+      const pandaUrl = 'https://app.deliverypanda.me/webservice/GetTracking';
+      const endpoint = isOnHold ? pandaUrl : '';
+      const proxyUrl = `${CORS_PROXY_URL}${endpoint}`;
+      
+      const payload = {
+        AwbNumber: [id]
+      };
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          "API-KEY": "159f8f293e01fd605d3b6dbad83cada2"
+        },
+        timeout: 30000 // optional: 30 sec like in cURL
+      };
+      axios.post(proxyUrl, payload, config)
+      .then((res) => {
+        if (isMounted) {
+          console.error("response::", res);
+          setStatus(res.data.status || "Ready to Dispatch");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching status for order:", id, err);
+        if (isMounted) setStatus("error");
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+      
+      return () => {
+        isMounted = false;
+      };
+    }, [id]);*/
+    
+    // map statuses to styles
+    const statusClasses = {
+      loading: "text-muted-foreground bg-gray-500/20",
+      shipped: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+      'Ready to Dispatch': "bg-orange-500/20 text-orange-400 border-orange-500/30",
+      error: "bg-red-500/20 text-red-400 border-red-500/30",
+    };
+    
+    return (
+      <>
+        {!checked ? (
+          <Badge
+            variant="outline"
+            onClick={handleCheck}
+            className={`uppercase status-badge cursor-pointer text-green-400`}
+          >
+            Check
+          </Badge>
+        ) : (
+          <Badge
+            variant="outline"
+            className={`uppercase status-badge ${ loading ? statusClasses['loading'] : statusClasses[status] || ""}`}
+          >
+            {loading ? "CHECKING.." : status?.toUpperCase()}
+          </Badge>
+        )}
+      </>
+    );
+  };
+  
   const uniqueKey = `${order.store_id}-${order.id}`;
 
   return (
@@ -123,6 +240,11 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           {formatDate(order.date_created)}
         </div>
       </td>}
+      
+      {visibleColumns.delivery_status && <td style={{ textAlign: "center" }}>
+        <DeliveryStatus order={order}/>
+      </td>}
+      
       {visibleColumns.ref && <td className={'cursor-pointer'} onClick={() => {
         let ref = order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id;
         if (ref) {
@@ -314,6 +436,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
               {screenOptions.visibleColumns.order && <th style={{ width: "120px" }}>Order</th>}
               {screenOptions.visibleColumns.status && <th style={{ width: "130px" }}>Status</th>}
               {screenOptions.visibleColumns.date && <th style={{ width: "120px" }}>Date</th>}
+              {screenOptions.visibleColumns.delivery_status && <th style={{ width: "170px", textAlign: "center" }}>Delivery Status</th>}
               {screenOptions.visibleColumns.ref && <th style={{ width: "120px" }}>Reference</th>}
               {screenOptions.visibleColumns.billing && <th>Billing</th>}
               {screenOptions.visibleColumns.shipping && <th>Ship to</th>}
