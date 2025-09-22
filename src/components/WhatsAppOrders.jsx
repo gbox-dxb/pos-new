@@ -23,14 +23,24 @@ const parseValue = (text, regex) => {
   return match ? match[1].trim() : '---';
 };
 
-function parseImportantNote(text) {
-  // match only the same line where "Important Note:" appears
-  const match = text.match(/^\s*Important Note:\s*([^\r\n]*)/im);
-  
-  if (!match) return null;
-  
-  const value = match[0].trim();
-  return value && value.length > 0 ? value.split(/Important Note:/i)[0] : null;
+function parseNote(text, noteType) {
+  /*
+  /^(important note|special note)\s*:/i.test(line) // starts with label
+  */
+  const pattern = new RegExp(`^(${noteType.toLowerCase()})\\s*:`, "i");
+  const results = text
+  .split(/\r?\n/)                      // split into lines
+  .map(line => line.trim())            // clean spaces
+  .filter(line => pattern.test(line))
+  .map(line => {
+    const [label, valueRaw = ""] = line.split(/:/); // split at colon
+    const value = valueRaw.trim();
+    return value && !/^(-+\s*)+$/.test(value)       // skip empty or only dashes
+      ? value
+      : '';
+  })
+  const note = results.filter(Boolean)
+  return note[0] || '';
 }
 
 const parseWhatsAppOrders = (text) => {
@@ -61,10 +71,10 @@ const parseWhatsAppOrders = (text) => {
       city: parseValue(fullBlock, /City\s*:\s*(.*)/),
       items: parseValue(fullBlock, /Item\(s\)\s*:\s*(.*)/),
       price: parseValue(fullBlock, /Price\s*:\s*(.*)/),
-      note: parseValue(fullBlock, /Special Note\s*:\s*(.*)/),
+      note: parseNote(fullBlock, 'Special Note'),
       delivery: parseValue(fullBlock, /Delivery:\s*(.*)/),
       totalPayment: parseValue(fullBlock, /TOTAL PAYMENT\s*:\s*(.*)/i),
-      importantNote: parseImportantNote(fullBlock),
+      importantNote: parseNote(fullBlock, 'Important Note')
     };
   });
 };
