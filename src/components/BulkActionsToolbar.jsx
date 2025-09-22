@@ -59,6 +59,10 @@ const BulkActionsToolbar = ({
           }
           break;
         }
+        case 'track': {
+          alert('Under Maintenance');
+          break;
+        }
         default: {
           onUpdateStatus(selectedStatus);
         }
@@ -100,6 +104,9 @@ const BulkActionsToolbar = ({
                           </SelectItem>
                         ))}
                         <SelectSeparator />
+                        <SelectItem value="track">
+                            Track Status
+                        </SelectItem>
                         <SelectItem value="trash">
                             Move to Trash
                         </SelectItem>

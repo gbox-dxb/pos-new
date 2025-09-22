@@ -121,8 +121,8 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       axios
       .post(proxyUrl, payload, config)
       .then((res) => {
-        console.log("response::", res?.data);
-        setStatus(res.data.status || "Ready to Dispatch");
+        console.log("response::", res?.data?.['TrackResponse'][0]['Shipment']);
+        setStatus(res?.data?.['TrackResponse'][0]['Shipment']['current_status'] || "Ready to Dispatch");
       })
       .catch((err) => {
         console.error("Error fetching status for order:", id, err);
@@ -178,7 +178,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     // map statuses to styles
     const statusClasses = {
       loading: "text-muted-foreground bg-gray-500/20",
-      shipped: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+      submitted: "bg-blue-500/20 text-blue-400 border-blue-500/30",
       'Ready to Dispatch': "bg-orange-500/20 text-orange-400 border-orange-500/30",
       error: "bg-red-500/20 text-red-400 border-red-500/30",
     };
@@ -196,7 +196,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         ) : (
           <Badge
             variant="outline"
-            className={`uppercase status-badge ${ loading ? statusClasses['loading'] : statusClasses[status] || ""}`}
+            className={`uppercase status-badge ${ loading ? statusClasses['loading'] : statusClasses[status.toLowerCase()] || ""}`}
           >
             {loading ? "CHECKING.." : status?.toUpperCase()}
           </Badge>
