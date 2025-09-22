@@ -113,7 +113,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       const config = {
         headers: {
           "Content-Type": "application/json",
-          "API-KEY": "159f8f293e01fd605d3b6dbad83cada2",
+          "API-KEY": localStorage.getItem("API_KEY"),
         },
         timeout: 30000,
       };
