@@ -19,6 +19,23 @@ const DashboardHeader = ({
   const { theme } = useTheme();
   const { permissions } = useAccessControl();
   
+  // helper method to get username
+  const getUsername = () => {
+    try {
+      const session = JSON.parse(sessionStorage.getItem("auth"));
+      if (session?.type === "user") {
+        return session.user?.name || null;
+      }
+      return null;
+    } catch (err) {
+      console.error("Failed to parse session", err);
+      return null;
+    }
+  };
+  
+  // use the method
+  const username = getUsername();
+  
   const logout = () => {
     // Clear localStorage
     localStorage.clear();
@@ -52,8 +69,8 @@ const DashboardHeader = ({
             <div className={`inline-flex items-center justify-center p-3 rounded-lg ${theme === 'dark' ? 'bg-primary/10' : 'bg-primary text-primary-foreground'}`}>
                <ShoppingCart className={`h-6 w-6 ${theme === 'dark' ? 'text-primary' : ''}`} />
             </div>
-            <h1 className="text-3xl font-bold text-foreground">
-              G-BOX Admin Dashboard
+            <h1 className="text-3xl font-bold text-foreground capitalize">
+              {`Hello, ${username} :)` || 'G-BOX Admin Dashboard'}
             </h1>
           </div>
           <p className="text-muted-foreground"></p>
