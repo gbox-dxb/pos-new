@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import '@/styles/design-system.css';
+import '@/styles/index.css';
 import { inject } from '@vercel/analytics';
 
 inject();

@@ -1,0 +1,6 @@
+/* This file is intentionally left blank. All styles are now in src/styles/design-system.css */
+
+.no-control, [data-no-control] {
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+}

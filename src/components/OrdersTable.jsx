@@ -104,6 +104,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
   const CORS_PROXY_URL = 'https://app-cors.vercel.app/api/proxy?url=';
   
   const DeliveryStatus = ({ order }) => {
+    const [shipper, setShipper] = useState(false);    // loading state for this order
     const [loading, setLoading] = useState(false);    // loading state for this order
     
     const id =
@@ -143,6 +144,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     
     const handleCheck = ({shipper, url, apiKey}) => {
       setLoading(true);
+      setShipper(shipper);
       
       const proxyUrl = `${CORS_PROXY_URL}${url}`;
       const payload = { AwbNumber: [id] };
@@ -162,7 +164,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         
         let shipment;
         
-        switch (shipper) {
+        switch (shipper.toLowerCase()) {
           case "panda": {
             if (result?.success) { // 0 or 1
               shipment = result?.["TrackResponse"][0]["Shipment"];
@@ -249,7 +251,44 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     
     return (
       <>
-        <Select disabled={loading}  onValueChange={(action) => {
+        {loading ? (
+          <div className="text-muted-foreground capitalize">
+            checking {shipper}..
+          </div>
+        ) : (
+          <div className="inline-flex rounded-md shadow-sm" role="group">
+            <button
+              type="button"
+              disabled={loading}
+              className={`uppercase px-3 text-xs font-medium text-white bg-orange-600 border border-orange-700 rounded-l-full hover:bg-orange-700 focus:z-10 focus:ring-2 focus:ring-orange-500 cursor-pointer`}
+              onClick={() =>
+                handleCheck({
+                  shipper: "panda",
+                  url: "https://app.deliverypanda.me/webservice/GetTracking",
+                  apiKey: "d68627256a4115c78102641f3044cf5f",
+                })
+              }
+            >
+              panda
+            </button>
+            <button
+              type="button"
+              disabled={loading}
+              className={`uppercase px-3 py-1 text-xs font-medium text-white bg-orange-600 border border-orange-700 rounded-r-full hover:bg-orange-700 focus:z-10 focus:ring-2 focus:ring-orange-500 cursor-pointer`}
+              onClick={() =>
+                handleCheck({
+                  shipper: "benex",
+                  url: "https://online.benexcargo.com/webservice/GetTracking",
+                  apiKey: "a97869c2993b5b059d1e3885f2003ee7",
+                })
+              }
+            >
+              benex
+            </button>
+          </div>
+        )}
+        
+        {/*<Select disabled={loading} onValueChange={(action) => {
           if (action === "panda") {
             handleCheck({
               shipper: action,
@@ -266,24 +305,24 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           }
         }}>
           <SelectTrigger className="">
-            <SelectValue placeholder="Track Delivery" />
+            <SelectValue placeholder="Track Delivery"/>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="panda">{loading ? 'checking..' : 'Panda'}</SelectItem>
             <SelectItem value="benex">{loading ? 'checking..' : 'Benex'}</SelectItem>
           </SelectContent>
-        </Select>
+        </Select>*/}
       </>
     );
   };
   
   const uniqueKey = `${order.store_id}-${order.id}`;
-
+  
   return (
     <motion.tr
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
+      initial={{opacity: 0}}
+      animate={{opacity: 1}}
+      transition={{duration: 0.3, delay: index * 0.05}}
       className={`align-top transition-colors ${isDuplicatePhone ? 'bg-red-500/10' : ''} ${isSelected ? 'bg-primary/10' : ''}`}
     >
       <td className="">
