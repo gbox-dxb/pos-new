@@ -252,8 +252,8 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     return (
       <>
         {loading ? (
-          <div className="text-muted-foreground capitalize">
-            checking {shipper}..
+          <div className="text-muted-foreground px-3 py-1 border font-medium rounded-full">
+            Checking {shipper.toUpperCase()}..
           </div>
         ) : (
           <div className="inline-flex rounded-md shadow-sm" role="group">
