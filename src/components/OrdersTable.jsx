@@ -115,26 +115,26 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       Swal.fire({
         title: `Current Status: ${(shipment["current_status"] || "Ready to Dispatch")}`,
         html: `
-        <div class="text-left mt-2 space-y-3">
-          ${shipment["Activity"].map(
-          (item) => `
-          <div class="p-3 border rounded-lg shadow-sm bg-white flex flex-col">
-            <div class="capitalize text-green-600 flex w-100 justify-between items-center">
-              <span class="text-gray-500 text-sm">${moment(item.datetime).format("MMM DD, YYYY")}</span>
-              <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full text-green-600 bg-green-50">
-                ${item.status.toLowerCase()}
-              </span>
-            </div>
-            <span class="capitalize text-gray-700 ">${item.details.toLowerCase()}</span>
-            <span class="capitalize text-gray-400 text-xs">${item.location.toLowerCase()}</span>
+          <div class="text-left mt-2 space-y-3">
+            ${shipment["Activity"].map(
+              (item) => `
+                <div class="p-3 border rounded-lg shadow-sm bg-white flex flex-col">
+                  <div class="capitalize text-green-600 flex w-100 justify-between items-center">
+                    <span class="text-gray-500 text-sm">${moment(item.datetime).format("MMM DD, YYYY")}</span>
+                    <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full text-green-600 bg-green-50">
+                      ${item.status.toLowerCase()}
+                    </span>
+                  </div>
+                  <span class="capitalize text-gray-700 text-sm">${item.details.toLowerCase()}</span>
+                  <span class="capitalize text-gray-400 text-xs">${item.location.toLowerCase()}</span>
+                </div>
+              `
+            ).join("")}
           </div>
-        `
-        ).join("")}
-    </div>
-  `,
-        width: 600,
+        `,
         customClass: {
-          popup: "p-4 rounded-lg shadow-lg text-left",
+          popup: "p-0 p-2 rounded-lg shadow-lg text-left",
+          title: "px-4",
           htmlContainer: "px-4",
           actions: "p-4 w-full flex justify-end space-x-2 mt-1 text-end",
         }
