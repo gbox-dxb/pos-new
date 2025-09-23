@@ -258,7 +258,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           .catch(err => console.error("failed to copy:", err))
         }
       }}>
-        <div className="text-xs text-gray-500 font-bold text-base">{order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id }</div>
+        <div className="text-xs text-gray-500 font-bold text-base">{(order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id ).toUpperCase()}</div>
       </td>}
       {visibleColumns.billing && <td className="text-xs">
         <BillingAddress address={order.billing} meta_data={order?.meta_data} />
