@@ -59,7 +59,7 @@ const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenO
             // return orderString.includes(lowercasedTerm);
             const refNormal = order.store_id === "whatsapp-order"
               ? order.id.toLowerCase()
-              : (order.store_name.slice(-3) + "" + order.id).toLowerCase(); // for search with PDXB12277, dxb112275
+              : (order.store_name.slice(-3) + "" + order.id).toLowerCase(); // for search with PDXB12277, pdxb12277
             
             const orderString = JSON.stringify(order).toLowerCase();
             // ✅ Match if ANY of the terms is found
