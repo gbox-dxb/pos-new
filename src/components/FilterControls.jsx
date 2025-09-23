@@ -57,10 +57,13 @@ const FilterControls = ({ orders, stores, onFilterChange, filteredCount, screenO
           filtered = filtered.filter(order => {
             // const orderString = JSON.stringify(order).toLowerCase();
             // return orderString.includes(lowercasedTerm);
-            const refNormal = (order.store_name+''+order.id).toLowerCase();  // for search with PDXB12277, dxb112275
+            const refNormal = order.store_id === "whatsapp-order"
+              ? order.id
+              : order.store_name.slice(-3) + "" + order.id; // for search with PDXB12277, dxb112275
+            
             const orderString = JSON.stringify(order).toLowerCase();
             // ✅ Match if ANY of the terms is found
-            return terms.some((term) => (term === refNormal) || orderString.includes(term));
+            return terms.some((term) => (term === refNormal.toLowerCase()) || orderString.includes(term));
           });
         }
 
