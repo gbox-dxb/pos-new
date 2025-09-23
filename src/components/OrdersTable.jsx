@@ -265,7 +265,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
                 handleCheck({
                   shipper: "panda",
                   url: "https://app.deliverypanda.me/webservice/GetTracking",
-                  apiKey: "d3bf5a4d1fa6f6bd077c4823c6dd5470",
+                  apiKey: process.env.REACT_APP_PANDA_API_KEY,
                 })
               }
             >
@@ -279,7 +279,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
                 handleCheck({
                   shipper: "benex",
                   url: "https://online.benexcargo.com/webservice/GetTracking",
-                  apiKey: "84b80d87e1c30071941be71b197a7474",
+                  apiKey: process.env.REACT_APP_BENEX_API_KEY,
                 })
               }
             >
