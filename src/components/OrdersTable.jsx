@@ -249,8 +249,6 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       };
     }, [id]);*/
     
-    console.log(import.meta.env);
-    
     return (
       <>
         {loading ? (
