@@ -11,7 +11,18 @@ import { generateOrderPDF } from '@/lib/pdfGenerator';
 import { useAccessControl } from '@/contexts/AccessControlContext';
 import { useToast } from '@/components/ui/use-toast';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectSeparator,
+} from "@/components/ui/select";
+
 import axios from "axios";
+import moment from "moment";
+import Swal from "sweetalert2";
 
 const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChange, onUpdateOrderDetails, visibleColumns }) => {
   const { toast } = useToast();
@@ -93,27 +104,52 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
   const CORS_PROXY_URL = 'https://app-cors.vercel.app/api/proxy?url=';
   
   const DeliveryStatus = ({ order }) => {
-    const [status, setStatus] = useState("loading"); // local status state
-    const [loading, setLoading] = useState(true);    // loading state for this order
-    const [checked, setChecked] = useState(false); // track if API was triggered
+    const [loading, setLoading] = useState(false);    // loading state for this order
     
     const id =
       order.store_id === "whatsapp-order"
         ? order.id
         : order.store_name.slice(-3) + "" + order.id;
     
-    const handleCheck = () => {
-      setChecked(true);
+    const showTrackingDetails = (shipment) => {
+      Swal.fire({
+        title: `Current Status: ${(shipment["current_status"] || "Ready to Dispatch")}`,
+        html: `
+        <div class="text-left mt-2 space-y-3">
+          ${shipment["Activity"].map(
+          (item) => `
+          <div class="p-3 border rounded-lg shadow-sm bg-white flex flex-col">
+            <div class="capitalize text-green-600 flex w-100 justify-between items-center">
+              <span class="text-gray-500 text-sm">${moment(item.datetime).format("MMM DD, YYYY")}</span>
+              <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full text-green-600 bg-green-50">
+                ${item.status.toLowerCase()}
+              </span>
+            </div>
+            <span class="capitalize text-gray-700 ">${item.details.toLowerCase()}</span>
+            <span class="capitalize text-gray-400 text-xs">${item.location.toLowerCase()}</span>
+          </div>
+        `
+        ).join("")}
+    </div>
+  `,
+        width: 600,
+        customClass: {
+          popup: "p-4 rounded-lg shadow-lg text-left",
+          htmlContainer: "px-4",
+          actions: "p-4 w-full flex justify-end space-x-2 mt-1 text-end",
+        }
+      });
+    };
+    
+    const handleCheck = ({shipper, url, apiKey}) => {
       setLoading(true);
       
-      const pandaUrl = "https://app.deliverypanda.me/webservice/GetTracking";
-      const proxyUrl = `${CORS_PROXY_URL}${pandaUrl}`;
-      
+      const proxyUrl = `${CORS_PROXY_URL}${url}`;
       const payload = { AwbNumber: [id] };
       const config = {
         headers: {
           "Content-Type": "application/json",
-          "API-KEY": localStorage.getItem("API_KEY") || 'd68627256a4115c78102641f3044cf5f',
+          "API-KEY": apiKey
         },
         timeout: 30000,
       };
@@ -121,12 +157,48 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       axios
       .post(proxyUrl, payload, config)
       .then((res) => {
-        console.log("response::", res?.data?.['TrackResponse'][0]['Shipment']);
-        setStatus(res?.data?.['TrackResponse'][0]['Shipment']['current_status'] || "Ready to Dispatch");
+        let result = res?.data;
+        console.log("result:", result);
+        
+        let shipment;
+        
+        switch (shipper) {
+          case "panda": {
+            if (result?.success) { // 0 or 1
+              shipment = result?.["TrackResponse"][0]["Shipment"];
+              showTrackingDetails(shipment);
+            } else {
+              Swal.fire({
+                icon: "info",
+                title: `${result?.message || "Unavailable"}`,
+                text: "There are no tracking updates for this shipment.",
+              });
+            }
+            break;
+          }
+          case "benex": {
+            if (result?.success) { // 0 or 1
+              shipment = result?.["TrackResponse"][0]["Shipment"];
+              showTrackingDetails(shipment);
+            } else {
+              Swal.fire({
+                icon: "info",
+                title: `${result?.message || "Unavailable"}`,
+                text: "There are no tracking updates for this shipment.",
+              });
+            }
+            break;
+          }
+        }
+        
       })
       .catch((err) => {
         console.error("Error fetching status for order:", id, err);
-        setStatus("error");
+        Swal.fire({
+          icon: "info",
+          title: `${result?.message || "Unavailable"}`,
+          text: "There are no tracking updates for this shipment.",
+        });
       })
       .finally(() => setLoading(false));
     };
@@ -175,32 +247,32 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       };
     }, [id]);*/
     
-    // map statuses to styles
-    const statusClasses = {
-      loading: "text-muted-foreground bg-gray-500/20",
-      submitted: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-      'Ready to Dispatch': "bg-orange-500/20 text-orange-400 border-orange-500/30",
-      error: "bg-red-500/20 text-red-400 border-red-500/30",
-    };
-    
     return (
       <>
-        {!checked ? (
-          <Badge
-            variant="outline"
-            onClick={handleCheck}
-            className={`uppercase status-badge cursor-pointer text-green-400`}
-          >
-            Check
-          </Badge>
-        ) : (
-          <Badge
-            variant="outline"
-            className={`uppercase status-badge ${ loading ? statusClasses['loading'] : statusClasses[status.toLowerCase()] || ""}`}
-          >
-            {loading ? "CHECKING.." : status?.toUpperCase()}
-          </Badge>
-        )}
+        <Select disabled={loading}  onValueChange={(action) => {
+          if (action === "panda") {
+            handleCheck({
+              shipper: action,
+              url: "https://app.deliverypanda.me/webservice/GetTracking",
+              apiKey: "d68627256a4115c78102641f3044cf5f",
+            });
+          }
+          if (action === "benex") {
+            handleCheck({
+              shipper: action,
+              url: "https://online.benexcargo.com/webservice/GetTracking",
+              apiKey: "a97869c2993b5b059d1e3885f2003ee7",
+            });
+          }
+        }}>
+          <SelectTrigger className="">
+            <SelectValue placeholder="Track Delivery" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="panda">{loading ? 'checking..' : 'Panda'}</SelectItem>
+            <SelectItem value="benex">{loading ? 'checking..' : 'Benex'}</SelectItem>
+          </SelectContent>
+        </Select>
       </>
     );
   };
