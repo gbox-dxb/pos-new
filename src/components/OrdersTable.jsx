@@ -287,7 +287,6 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
             </button>
           </div>
         )}
-        
         {/*<Select disabled={loading} onValueChange={(action) => {
           if (action === "panda") {
             handleCheck({
