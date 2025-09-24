@@ -87,7 +87,7 @@ const BulkActionsToolbar = ({
                     "Content-Type": "application/json",
                     "API-KEY": import.meta.env.VITE_PANDA_API_KEY,
                   },
-                  timeout: 30000,
+                  timeout: 10000,
                 };
                 
                 try {

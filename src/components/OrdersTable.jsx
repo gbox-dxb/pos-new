@@ -154,7 +154,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           "Content-Type": "application/json",
           "API-KEY": apiKey
         },
-        timeout: 30000,
+        timeout: 10000,
       };
       
       axios
@@ -232,7 +232,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           "Content-Type": "application/json",
           "API-KEY": "159f8f293e01fd605d3b6dbad83cada2"
         },
-        timeout: 30000 // optional: 30 sec like in cURL
+        timeout: 10000 // optional: 10 sec like in cURL
       };
       axios.post(proxyUrl, payload, config)
       .then((res) => {
