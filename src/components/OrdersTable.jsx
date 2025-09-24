@@ -532,7 +532,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
         <table className="woo-table">
           <thead>
             <tr>
-              <th style={{ width: "2%" }}>
+              <th style={{ width: "42px" }}>
                 <Checkbox
                   id="select-all"
                   checked={isAllOnPageSelected}
