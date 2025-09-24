@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, Package, ExternalLink, FileText } from 'lucide-react';
+import { Eye, Package, ExternalLink, FileText, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -24,7 +24,7 @@ import axios from "axios";
 import moment from "moment";
 import Swal from "sweetalert2";
 
-const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChange, onUpdateOrderDetails, visibleColumns }) => {
+const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChange, onUpdateOrderDetails, visibleColumns, onTrashSelected }) => {
   const { toast } = useToast();
   
   const { permissions } = useAccessControl();
@@ -475,6 +475,20 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           >
             <FileText className="h-3 w-3" />
           </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              let rowCheckbox = document.getElementById(`select-${uniqueKey}`);
+              if (rowCheckbox) {
+                rowCheckbox.click();
+                onTrashSelected();
+              }
+            }}
+            title="Move to Trash"
+          >
+            <Trash2 className="h-3 w-3 text-red-600" />
+          </Button>
         </div>
       </td>}
     </motion.tr>
@@ -615,6 +629,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
                 onSelectionChange={handleSelectionChange}
                 onUpdateOrderDetails={onUpdateOrderDetails}
                 visibleColumns={screenOptions.visibleColumns}
+                onTrashSelected={onTrashSelected}
               />
             })}
           </tbody>
