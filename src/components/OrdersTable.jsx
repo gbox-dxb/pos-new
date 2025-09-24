@@ -430,11 +430,18 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
             </li>
           ))}
         </ul>
-        {order.customer_note && (
+        {/*{order.customer_note && (*/}
           <div className="mt-2 p-2 bg-red-500/10 border-l-2 border-red-400 text-red-600 text-xs">
-            <strong>Note:</strong> {order.customer_note}
+            <strong>Note:</strong> {}
+            <EditableField
+              initialValue={order.customer_note || '-'}
+              onSave={handleFieldSave}
+              fieldName="customer_note"
+              orderId={order.id}
+              disabled={!canEdit}
+            />
           </div>
-        )}
+        {/*)}*/}
       </td>}
       {visibleColumns.payment && <td>
         <div className="text-sm">{order.payment_method_title}</div>
