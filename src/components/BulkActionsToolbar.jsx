@@ -210,7 +210,9 @@ const BulkActionsToolbar = ({
       }*/
     }
   };
-
+  
+  const session = JSON.parse(sessionStorage.getItem("auth"));
+  
   return (
     <AnimatePresence>
       {selectedCount > 0 && (
@@ -240,9 +242,13 @@ const BulkActionsToolbar = ({
                           </SelectItem>
                         ))}
                         <SelectSeparator/>
-                        <SelectItem value="track" title={'Available: Panda Courier'}>
-                          Track Delivery Status {selectedCount > 5 ? (<sup>(Top 5)</sup>) : ''}
-                        </SelectItem>
+                        
+                        {session?.type === "admin" && (
+                          <SelectItem value="track" title={'Available: Panda Courier'}>
+                            Track Delivery Status {selectedCount > 5 ? (<sup>(Top 5)</sup>) : ''}
+                          </SelectItem>
+                        )}
+                        
                         <SelectItem value="trash">
                           Move to Trash
                         </SelectItem>
