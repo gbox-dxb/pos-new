@@ -423,7 +423,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
                     rel="noopener noreferrer"
                     className="ml-1 text-primary hover:underline inline-flex items-center gap-1"
                   >
-                    {item.name} <ExternalLink className="h-3 w-3" />
+                    {item.quantity}-PC(s) {item.name} <ExternalLink className="h-3 w-3" />
                   </a>
                 )
               }
