@@ -114,13 +114,13 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       switch (status.toLowerCase()) {
         case "submitted":
           return {
-            className: "text-muted-foreground bg-gray-50 border-gray-100",
+            className: "text-muted-foreground bg-gray-50 border-gray-400",
             icon: "",
           };
         case "delivered":
           return {
             className: "text-green-600 bg-green-50 border-green-100",
-            icon: "✅️",
+            icon: "",
           };
         case "return to origin":
           return {
@@ -150,7 +150,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
               .map((item) => {
                 const {className, icon} = getStatusMeta(item.status);
                 return `
-                  <div class="p-3 border border-gray-300 rounded-lg shadow-sm bg-white flex flex-col">
+                  <div class="p-3 border rounded-lg shadow-sm bg-white flex flex-col ${item.location.toLowerCase() === 'submitted' ? 'border-emerald-600' : 'border-gray-300'}">
                     <div class="capitalize text-green-600 flex w-100 justify-between items-center">
                       <div class="text-gray-500 text-sm">
                           <span class="text-xs">${moment(item.datetime).format("MMM DD, YYYY")}</span> -

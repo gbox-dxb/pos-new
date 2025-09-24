@@ -74,7 +74,7 @@ const BulkActionsToolbar = ({
               switch (status.toLowerCase()) {
                 case "submitted":
                   return {
-                    className: "text-muted-foreground bg-gray-50 border-gray-100",
+                    className: "text-muted-foreground bg-gray-50 border-gray-400",
                     icon: "",
                   };
                 case "delivered":
