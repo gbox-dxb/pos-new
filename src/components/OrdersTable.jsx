@@ -421,9 +421,9 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
                     href={`${order.store_url}?p=${item.product_id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ml-1 text-primary hover:underline inline-flex items-center gap-1"
+                    className="ml-1 text-primary hover:underline inline-flex items-center gap-1 underline"
                   >
-                    {item.quantity}-PC(s) {item.name} <ExternalLink className="h-3 w-3" />
+                    {item.quantity}-PC(s) {item.name} {/*<ExternalLink className="h-7 w-7" />*/}
                   </a>
                 )
               }
@@ -432,7 +432,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         </ul>
         {/*{order.customer_note && (*/}
           <div className="mt-2 p-2 bg-red-500/10 border-l-2 border-red-400 text-red-600 text-xs">
-            <strong>Note:</strong> {}
+            <strong>Note:</strong>
             <EditableField
               initialValue={order.customer_note || '-'}
               onSave={handleFieldSave}
