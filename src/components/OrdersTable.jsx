@@ -112,20 +112,23 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     
     const showTrackingDetails = (shipment) => {
       Swal.fire({
-        title: `Current Status: ${(shipment["current_status"] || "Ready to Dispatch")}`,
+        title: `Current Status: ${(shipment["status"] || "Ready to Dispatch")}`,
         html: `
           <div class="text-left mt-2 space-y-3">
-            ${shipment["Activity"].map(
-              (item) => `
+            ${[...shipment["Activity"]]
+              .reverse()
+              .map((item) => `
                 <div class="p-3 border border-gray-300 rounded-lg shadow-sm bg-white flex flex-col">
                   <div class="capitalize text-green-600 flex w-100 justify-between items-center">
-                    <span class="text-gray-500 text-sm">${moment(item.datetime).format("MMM DD, YYYY")}</span>
-                    <span class="capitalize inline-block px-2 py-1 text-xs border border-gray-300 rounded-full text-green-600 bg-green-50">
+                    <div class="text-gray-500 text-sm">
+                        <span class="text-xs">${moment(item.datetime).format("MMM DD, YYYY")}</span> -
+                        ${item.location.toLowerCase()}
+                    </div>
+                    <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full ${item.status.toLowerCase() === 'unavailable' ? 'text-red-600 bg-red-50 border-red-300 ' : 'text-green-600 bg-green-50 border-gray-100'}">
                       ${item.status.toLowerCase()}
                     </span>
                   </div>
                   <span class="capitalize text-gray-700 text-sm">${item.details.toLowerCase()}</span>
-                  <span class="capitalize text-gray-400 text-xs">${item.location.toLowerCase()}</span>
                 </div>
               `
             ).join("")}
@@ -166,7 +169,11 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           case "panda": {
             if (result?.success) { // 0 or 1
               shipment = result?.["TrackResponse"][0]["Shipment"];
-              showTrackingDetails(shipment);
+              showTrackingDetails({
+                id,
+                status: shipment["current_status"] || "Ready to Dispatch",
+                Activity: shipment["Activity"]
+              });
             } else {
               Swal.fire({
                 icon: "info",
