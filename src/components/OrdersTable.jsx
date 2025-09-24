@@ -110,18 +110,33 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         ? order.id
         : order.store_name.slice(-3) + "" + order.id;
     
-    const getStatusClass = (status) => {
+    const getStatusMeta = (status) => {
       switch (status.toLowerCase()) {
         case "submitted":
-          return `text-muted-foreground bg-gray-50 border-gray-100`;
+          return {
+            className: "text-muted-foreground bg-gray-50 border-gray-100",
+            icon: "",
+          };
         case "delivered":
-          return `text-green-600 bg-green-50 border-green-100`;
+          return {
+            className: "text-green-600 bg-green-50 border-green-100",
+            icon: "✔",
+          };
         case "return to origin":
-          return `text-orange-600 bg-orange-50 border-orange-100`;
+          return {
+            className: "text-orange-600 bg-orange-50 border-orange-100",
+            icon: "",
+          };
         case "unavailable":
-          return `text-red-600 bg-red-50 border-red-100`;
+          return {
+            className: "text-red-600 bg-red-50 border-red-100",
+            icon: "",
+          };
         default:
-          return `text-blue-600 bg-blue-50 border-blue-100`;
+          return {
+            className: "text-blue-600 bg-blue-50 border-blue-100",
+            icon: "⚡︎",
+          };
       }
     }
     
@@ -132,21 +147,23 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           <div class="text-left mt-2 space-y-3">
             ${[...shipment["Activity"]]
               .reverse()
-              .map((item) => `
-                <div class="p-3 border border-gray-300 rounded-lg shadow-sm bg-white flex flex-col">
-                  <div class="capitalize text-green-600 flex w-100 justify-between items-center">
-                    <div class="text-gray-500 text-sm">
-                        <span class="text-xs">${moment(item.datetime).format("MMM DD, YYYY")}</span> -
-                        ${item.location.toLowerCase()}
+              .map((item) => {
+                const {className, icon} = getStatusMeta(item.status);
+                return `
+                  <div class="p-3 border border-gray-300 rounded-lg shadow-sm bg-white flex flex-col">
+                    <div class="capitalize text-green-600 flex w-100 justify-between items-center">
+                      <div class="text-gray-500 text-sm">
+                          <span class="text-xs">${moment(item.datetime).format("MMM DD, YYYY")}</span> -
+                          ${item.location.toLowerCase()}
+                      </div>
+                      <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full ${className}">
+                        ${item.status.toLowerCase()} ${icon}
+                      </span>
                     </div>
-                    <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full ${getStatusClass(item.status)}">
-                      ${item.status.toLowerCase()}
-                    </span>
+                    <span class="capitalize text-gray-700 text-sm">${item.details.toLowerCase()}</span>
                   </div>
-                  <span class="capitalize text-gray-700 text-sm">${item.details.toLowerCase()}</span>
-                </div>
-              `
-            ).join("")}
+                `
+              }).join("")}
           </div>
         `,
         customClass: {
