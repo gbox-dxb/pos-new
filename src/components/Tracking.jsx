@@ -22,8 +22,8 @@ const useTrackingCompanies = () => {
                 const defaultCompany = [{
                     id: uuidv4(),
                     name: 'Delivery Panda',
-                    url: 'https://app.deliverypanda.me/webservice/GetTracking',
-                    apiKey: '159f8f293e01fd605d3b6dbad83cada2'
+                    url: import.meta.env.VITE_PANDA_URL,
+                    apiKey: import.meta.env.VITE_PANDA_API_KEY
                 }];
                 setCompanies(defaultCompany);
                 localStorage.setItem('trackingCompanies', JSON.stringify(defaultCompany));
