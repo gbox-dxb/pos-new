@@ -110,6 +110,21 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         ? order.id
         : order.store_name.slice(-3) + "" + order.id;
     
+    const getStatusClass = (status) => {
+      switch (status.toLowerCase()) {
+        case "submitted":
+          return `text-muted-foreground bg-gray-50 border-gray-100`;
+        case "delivered":
+          return `text-green-600 bg-green-50 border-green-100`;
+        case "return to origin":
+          return `text-orange-600 bg-orange-50 border-orange-100`;
+        case "unavailable":
+          return `text-red-600 bg-red-50 border-red-100`;
+        default:
+          return `text-blue-600 bg-blue-50 border-blue-100`;
+      }
+    }
+    
     const showTrackingDetails = (shipment) => {
       Swal.fire({
         title: `Current Status: ${(shipment["status"] || "Ready to Dispatch")}`,
@@ -124,7 +139,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
                         <span class="text-xs">${moment(item.datetime).format("MMM DD, YYYY")}</span> -
                         ${item.location.toLowerCase()}
                     </div>
-                    <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full ${item.status.toLowerCase() === 'unavailable' ? 'text-red-600 bg-red-50 border-red-300 ' : 'text-green-600 bg-green-50 border-gray-100'}">
+                    <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full ${getStatusClass(item.status)}">
                       ${item.status.toLowerCase()}
                     </span>
                   </div>
