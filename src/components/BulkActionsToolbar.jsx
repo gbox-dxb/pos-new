@@ -164,7 +164,7 @@ const BulkActionsToolbar = ({
                       <div class="p-3 border border-gray-300 rounded-lg shadow-sm bg-white flex flex-col">
                         <div class="capitalize text-green-600 flex w-100 justify-between items-center">
                           <div class="text-gray-500 text-sm">
-                              <span class="text-xs">${moment(item.datetime).format("MMM DD, YYYY")}</span> -
+                              <span class="text-xs">${moment(item.datetime).format("MMM DD, YYYY, hh:mm A")}</span> -
                               ${item.id}
                           </div>
                           <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full ${className}">
