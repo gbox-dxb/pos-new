@@ -177,9 +177,8 @@ const Tracking = () => {
     setTrackingData(null);
 
     try {
-      const CORS_PROXY_URL = 'https://app-cors.vercel.app/api/proxy?url=';
-        const proxyUrl = `${CORS_PROXY_URL}${selectedCompany.url}`;
-        console.log('proxyUrl', proxyUrl);
+      const proxyUrl = `${import.meta.env.VITE_CORS_PROXY_URL}${selectedCompany.url}`;
+      console.log('proxyUrl', proxyUrl);
       const response = await fetch(proxyUrl, {
         method: 'POST',
         headers: {

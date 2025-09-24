@@ -4,7 +4,7 @@ import { toast } from '@/components/ui/use-toast';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 
-const CORS_PROXY_URL = 'https://app-cors.vercel.app/api/proxy?url=';
+const CORS_PROXY_URL = import.meta.env.VITE_CORS_PROXY_URL;
 
 export const testStoreConnection = async (storeData) => {
   const auth = btoa(`${storeData.consumerKey}:${storeData.consumerSecret}`);

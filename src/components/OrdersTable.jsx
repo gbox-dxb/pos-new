@@ -101,8 +101,6 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     );
   };
   
-  const CORS_PROXY_URL = 'https://app-cors.vercel.app/api/proxy?url=';
-  
   const DeliveryStatus = ({ order }) => {
     const [shipper, setShipper] = useState(false);    // loading state for this order
     const [loading, setLoading] = useState(false);    // loading state for this order
@@ -119,10 +117,10 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           <div class="text-left mt-2 space-y-3">
             ${shipment["Activity"].map(
               (item) => `
-                <div class="p-3 border rounded-lg shadow-sm bg-white flex flex-col">
+                <div class="p-3 border border-gray-300 rounded-lg shadow-sm bg-white flex flex-col">
                   <div class="capitalize text-green-600 flex w-100 justify-between items-center">
                     <span class="text-gray-500 text-sm">${moment(item.datetime).format("MMM DD, YYYY")}</span>
-                    <span class="capitalize inline-block px-2 py-1 text-xs border rounded-full text-green-600 bg-green-50">
+                    <span class="capitalize inline-block px-2 py-1 text-xs border border-gray-300 rounded-full text-green-600 bg-green-50">
                       ${item.status.toLowerCase()}
                     </span>
                   </div>
@@ -146,7 +144,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       setLoading(true);
       setShipper(shipper);
       
-      const proxyUrl = `${CORS_PROXY_URL}${url}`;
+      const proxyUrl = `${import.meta.env.VITE_CORS_PROXY_URL}${url}`;
       const payload = { AwbNumber: [id] };
       const config = {
         headers: {
@@ -264,7 +262,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
               onClick={() =>
                 handleCheck({
                   shipper: "panda",
-                  url: "https://app.deliverypanda.me/webservice/GetTracking",
+                  url: import.meta.env.VITE_PANDA_URL,
                   apiKey: import.meta.env.VITE_PANDA_API_KEY,
                 })
               }
@@ -278,7 +276,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
               onClick={() =>
                 handleCheck({
                   shipper: "benex",
-                  url: "https://online.benexcargo.com/webservice/GetTracking",
+                  url: import.meta.env.VITE_BENEX_URL,
                   apiKey: import.meta.env.VITE_BENEX_API_KEY,
                 })
               }
@@ -528,6 +526,7 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
         onDeletePermanently={onDeletePermanently}
         isTrashView={isTrashView}
         selectedRows={selectedRows}
+        orders={orders}
       />}
       <div className="overflow-x-auto rounded-lg border">
         <table className="woo-table">
