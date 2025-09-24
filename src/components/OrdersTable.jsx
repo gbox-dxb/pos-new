@@ -120,7 +120,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         case "delivered":
           return {
             className: "text-green-600 bg-green-50 border-green-100",
-            icon: "✔",
+            icon: "✅️",
           };
         case "return to origin":
           return {
