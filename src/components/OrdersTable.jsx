@@ -383,7 +383,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         </Badge>
       </td>}
       {visibleColumns.date && <td>
-        <div className="text-sm">
+        <div className="text-sm whitespace-nowrap lg:whitespace-normal">
           {formatDate(order.date_created)}
         </div>
       </td>}

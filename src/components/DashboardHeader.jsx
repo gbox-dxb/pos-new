@@ -75,7 +75,7 @@ const DashboardHeader = ({
           </div>
           <p className="text-muted-foreground"></p>
         </div>
-        <div className="flex flex-wrap items-center gap-2 mt-4 md:mt-0">
+        <div className="flex flex-wrap items-center gap-2 mt-4 md:mt-0 justify-between">
           {permissions.viewRevenue && (
             <Card className="p-2 px-4 flex items-center gap-2">
               <DollarSign className="h-5 w-5 text-green-500" />
@@ -107,7 +107,7 @@ const DashboardHeader = ({
             </>
           )}
           <Button onClick={logout} variant="secondary">
-            <Lock className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <Lock className={`h-4 w-4 mr-2`} />
             Logout
           </Button>
         </div>
