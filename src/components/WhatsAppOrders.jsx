@@ -48,6 +48,7 @@ const parseWhatsAppOrders = (text) => {
 
   return orderBlocks.map(block => {
     const fullBlock = `Ref#${block}`;
+    /*
     const refLineMatch = fullBlock.match(/Ref#\s*(.*?)\s*(\d{2}\/\d{2}\/\d{2,4})\s*(.*)/);
     let refNum = '---';
     let date = '---';
@@ -59,6 +60,14 @@ const parseWhatsAppOrders = (text) => {
       refNum = [part1, part2].filter(Boolean).join('-');
     } else {
       refNum = parseValue(fullBlock, /Ref#\s*(.*)/).split('\n')[0];
+    }
+    */
+    const refMatch = fullBlock.match(/Ref#\s*([A-Za-z0-9]+-?\s*\d+).*?(\d{2}\/\d{2}\/\d{2,4})/i);
+    let refNum = '---';
+    let date = '---';
+    if (refMatch) {
+      refNum = refMatch[1].replace(/\s+/g, ""); // WTSP-5879
+      date = refMatch[2]; // 19/09/25
     }
 
     return {
