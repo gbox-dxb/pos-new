@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, Package, ExternalLink, FileText, Trash2 } from 'lucide-react';
@@ -25,6 +26,9 @@ import moment from "moment";
 import Swal from "sweetalert2";
 
 const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChange, onUpdateOrderDetails, visibleColumns, onTrashSelected, isTrashView }) => {
+  const buttonRef = useRef(null);
+  const checkboxRef = useRef(null);
+  
   const { toast } = useToast();
   
   const { permissions } = useAccessControl();
@@ -364,6 +368,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       <td className="">
         <div className="flex justify-center items-center h-full">
           <Checkbox
+            ref={checkboxRef}
             id={`select-${uniqueKey}`}
             checked={isSelected}
             onCheckedChange={() => onSelectionChange(uniqueKey)}
@@ -477,13 +482,20 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           </Button>
           {!isTrashView && (
             <Button
+              ref={buttonRef}
               size="sm"
               variant="secondary"
               onClick={() => {
-                let rowCheckbox = document.getElementById(`select-${uniqueKey}`);
-                if (rowCheckbox) {
-                  rowCheckbox.click();
-                  onTrashSelected();
+                if (buttonRef.current && checkboxRef.current) {
+                  toast({
+                    title: `Processing..`,
+                    description: `Moving ${order.id} to trash.`
+                  });
+                  buttonRef.current.disabled = true;
+                  onSelectionChange(uniqueKey);
+                  setTimeout(() => {
+                    onTrashSelected();
+                  }, 1000);
                 }
               }}
               title="Move to Trash"
