@@ -67,8 +67,10 @@ const BulkActionsToolbar = ({
         }
         case 'track': {
           try {
-            // pick top 5 for batch orders for status responses
-            const limitedOrders = orders.slice(0, 5);
+            // filter first selectedRows
+            const ordersToTrack = orders.filter(o => selectedRows.has(`${o.store_id}-${o.id}`));
+            // pick top 5 for batch status responses
+            const limitedOrders = ordersToTrack.slice(0, 5);
             
             const getStatusMeta = (status) => {
               switch (status.toLowerCase()) {
