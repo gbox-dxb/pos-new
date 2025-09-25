@@ -484,7 +484,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           >
             <FileText className="h-3 w-3" />
           </Button>
-          {!isTrashView && (
+          {/*{!isTrashView && (
             <Button
               ref={buttonRef}
               size="sm"
@@ -506,7 +506,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
             >
               <Trash2 className="h-3 w-3 text-red-600" />
             </Button>
-          )}
+          )}*/}
         </div>
       </td>}
     </motion.tr>
