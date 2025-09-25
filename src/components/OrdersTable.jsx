@@ -394,7 +394,11 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       </td>}
       
       {visibleColumns.delivery_status && <td style={{ textAlign: "center" }}>
-        <DeliveryStatus order={order}/>
+        {order.status.toLowerCase() !== 'processing' ? <DeliveryStatus order={order}/> : (
+          <div className={'text-3xl text-muted-foreground'} title={'ᯓ⛟ awaiting shipment..'}>
+            📡
+          </div>
+        )}
       </td>}
       
       {visibleColumns.ref && <td className={'cursor-pointer'} onClick={() => {
