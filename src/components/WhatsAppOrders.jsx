@@ -485,7 +485,18 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
       }
     });
   }, [currentOrders, searchTerm, dateFilter]);
-
+  
+  const phoneNumbersCount = useMemo(() => {
+    const counts = {};
+    currentOrders.forEach(order => {
+      const phone = order?.mobile?.replace(/\D/g, '');
+      if (phone) {
+        counts[phone] = (counts[phone] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [currentOrders]);
+  
   useEffect(() => {
     setSelectedRows(new Set());
   }, [activeSheetId]);
@@ -684,38 +695,42 @@ const WhatsAppOrders = ({ onMoveOrder }) => {
                 </TableHeader>
                 <TableBody>
                   {isAddingOrder && <NewOrderRow onSave={handleSaveNewOrder} onCancel={() => setIsAddingOrder(false)} />}
-                  {filteredOrders.length > 0 ? filteredOrders.map(order => (
-                    <TableRow key={order.id} data-state={selectedRows.has(order.id) ? "selected" : undefined}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedRows.has(order.id)}
-                          onCheckedChange={() => handleSelectionChange(order.id)}
-                        />
-                      </TableCell>
-                      <TableCell><EditableField initialValue={order.ref} onSave={handleFieldSave} fieldName="ref" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.date} onSave={handleFieldSave} fieldName="date" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.name} onSave={handleFieldSave} fieldName="name" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.mobile} onSave={handleFieldSave} fieldName="mobile" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.address} onSave={handleFieldSave} fieldName="address" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.city} onSave={handleFieldSave} fieldName="city" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.items} onSave={handleFieldSave} fieldName="items" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.price} onSave={handleFieldSave} fieldName="price" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.delivery} onSave={handleFieldSave} fieldName="delivery" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.totalPayment} onSave={handleFieldSave} fieldName="totalPayment" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.note} onSave={handleFieldSave} fieldName="note" orderId={order.id} /></TableCell>
-                      <TableCell><EditableField initialValue={order.importantNote} onSave={handleFieldSave} fieldName="importantNote" orderId={order.id} /></TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" onClick={() => handleMoveOrder(order)} title="Move to Orders">
-                            <Send className="h-4 w-4 text-primary" />
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDeleteSingle(order.id)} title="Delete Order">
-                            <Trash className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )) : (
+                  {filteredOrders.length > 0 ? filteredOrders.map(order => {
+                    const phone = order?.mobile?.replace(/\D/g, '');
+                    const isDuplicate = phone && phoneNumbersCount[phone] > 1;
+                    return (
+                      <TableRow key={order.id} data-state={selectedRows.has(order.id) ? "selected" : undefined} className={`${isDuplicate ? 'bg-red-500/10' : ''}`}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedRows.has(order.id)}
+                            onCheckedChange={() => handleSelectionChange(order.id)}
+                          />
+                        </TableCell>
+                        <TableCell><EditableField initialValue={order.ref} onSave={handleFieldSave} fieldName="ref" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.date} onSave={handleFieldSave} fieldName="date" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.name} onSave={handleFieldSave} fieldName="name" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.mobile} onSave={handleFieldSave} fieldName="mobile" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.address} onSave={handleFieldSave} fieldName="address" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.city} onSave={handleFieldSave} fieldName="city" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.items} onSave={handleFieldSave} fieldName="items" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.price} onSave={handleFieldSave} fieldName="price" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.delivery} onSave={handleFieldSave} fieldName="delivery" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.totalPayment} onSave={handleFieldSave} fieldName="totalPayment" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.note} onSave={handleFieldSave} fieldName="note" orderId={order.id} /></TableCell>
+                        <TableCell><EditableField initialValue={order.importantNote} onSave={handleFieldSave} fieldName="importantNote" orderId={order.id} /></TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button variant="ghost" size="icon" onClick={() => handleMoveOrder(order)} title="Move to Orders">
+                              <Send className="h-4 w-4 text-primary" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleDeleteSingle(order.id)} title="Delete Order">
+                              <Trash className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  }) : (
                     !isAddingOrder && (
                       <TableRow>
                         <TableCell colSpan={14} className="h-24 text-center">
