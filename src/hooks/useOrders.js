@@ -136,9 +136,9 @@ export const useOrders = () => {
     };
     const extractNumber = (str) => {
       let empty = !/^[-\s]+$/.test(str);
-      if (!str || !empty) return null;
+      if (!str || !empty) return 0;
       const num = parseFloat(str.replace(/[^0-9.]/g, ""));
-      return isNaN(num) ? null : num;
+      return isNaN(num) ? 0 : num;
     };
     const finalAmount = (extractNumber(waOrder.totalPayment) || extractNumber(waOrder.price)).toString();
     

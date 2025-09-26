@@ -43,6 +43,13 @@ function parseNote(text, noteType) {
   return note[0] || '---';
 }
 
+const extractNumber = (str) => {
+  let empty = !/^[-\s]+$/.test(str);
+  if (!str || !empty) return 0;
+  const num = parseFloat(str.replace(/[^0-9.]/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
 const parseWhatsAppOrders = (text) => {
   const orderBlocks = text.split(/Ref#/).slice(1);
 
@@ -69,7 +76,10 @@ const parseWhatsAppOrders = (text) => {
       refNum = refMatch[1].replace(/\s+/g, ""); // WTSP-5879
       date = refMatch[2]; // 19/09/25
     }
-
+    
+    const price = parseValue(fullBlock, /Price\s*:\s*(.*)/);
+    const finalAmount = extractNumber(price) + 'AED';
+    
     return {
       id: uuidv4(),
       ref: refNum,
@@ -79,7 +89,7 @@ const parseWhatsAppOrders = (text) => {
       address: parseValue(fullBlock, /Address\s*:\s*(.*)/),
       city: parseValue(fullBlock, /City\s*:\s*(.*)/),
       items: parseValue(fullBlock, /Item\(s\)\s*:\s*(.*)/),
-      price: parseValue(fullBlock, /Price\s*:\s*(.*)/),
+      price: finalAmount,
       note: parseNote(fullBlock, 'Special Note'),
       delivery: parseValue(fullBlock, /Delivery:\s*(.*)/),
       totalPayment: parseValue(fullBlock, /TOTAL PAYMENT\s*:\s*(.*)/i),
