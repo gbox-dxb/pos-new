@@ -262,9 +262,9 @@ const BulkActionsToolbar = ({
                           Restore from Trash
                         </SelectItem>
                         <SelectSeparator/>
-                        <SelectItem value="delete_permanently">
+                        {/*<SelectItem value="delete_permanently">
                           Delete Permanently
-                        </SelectItem>
+                        </SelectItem>*/}
                       </>
                     )}
                   </SelectContent>
