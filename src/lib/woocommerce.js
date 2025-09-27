@@ -3,6 +3,7 @@ import moment from "moment";
 import { toast } from '@/components/ui/use-toast';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
+import { v4 as uuidv4 } from 'uuid';
 
 const CORS_PROXY_URL = import.meta.env.VITE_CORS_PROXY_URL;
 
@@ -547,6 +548,83 @@ export const importOrdersFromExcel = (file, stores, toast) => {
 
         resolve(allCreatedOrders);
 
+      } catch (error) {
+        console.error("Error processing file:", error);
+        reject(new Error("Could not parse file. Make sure it's a valid Excel or CSV file."));
+      }
+    };
+    reader.onerror = (error) => reject(error);
+    reader.readAsBinaryString(file);
+  });
+};
+
+export const importOrdersFromExcelForWhatsapp = (file, store, toast) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+        
+        if (json.length === 0) {
+          throw new Error("The selected file is empty or in the wrong format.");
+        }
+        
+        const orders= json.map((row) => {
+          const newId = `${row['Reference'].replace(/^([A-Za-z]{2})[A-Za-z0-9]*-.*([0-9]{2}).*$/, "$1$2")}` + Math.floor(10000 + Math.random() * 90000);
+          let total = row['Total'];
+          const parseLineItems = (str) => {
+            if (!str || typeof str !== "string") return [];
+            return str
+            .split(/[,;]+/) // split by comma OR semicolon
+            .map(s => s.trim())
+            .filter(s => s.length > 0)
+            .map(item => {
+              const [qtyPart, ...nameParts] = item.split("x");
+              const quantity = parseInt(qtyPart.trim(), 10) || 0;
+              const name = nameParts.join("x").trim(); // in case name has 'x' in it
+              return {
+                id: uuidv4(),
+                name,
+                quantity,
+                total
+              };
+            })
+            .filter(item => item.name.length > 0); // clean invalids
+          }
+          return {
+            id: newId,
+            store_id: store['id'],
+            store_name: row['Store'] || store['name'],
+            date_created: row['Date'] || moment().format("YYYY-MM-DDTHH:mm:ss"),
+            status: row['Status'] || 'pending',
+            billing: {
+              first_name: row['Billing First Name'] || '',
+              last_name: row['Billing Last Name'] || '',
+              address_1: row['Billing Address 1'] || '',
+              address_2: row['Billing Address 2'] || '',
+              city: row['Billing City'] || '',
+              phone: String(row['Billing Phone']) || '',
+            },
+            shipping: {},
+            line_items: parseLineItems(row['Items']),
+            customer_note: row['Note'] || row['Customer Note'] || '',
+            payment_method: row['Payment Method'] || 'other',
+            payment_method_title: 'Manual Order',
+            total: total,
+            currency: row['Currency'] || 'AED',
+          };
+        });
+        
+        toast({
+          title: "Import Complete",
+          description: `Successfully created orders.`,
+        });
+        
+        resolve(orders);
       } catch (error) {
         console.error("Error processing file:", error);
         reject(new Error("Could not parse file. Make sure it's a valid Excel or CSV file."));

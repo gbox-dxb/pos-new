@@ -4,7 +4,15 @@ import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
 import { useStores } from '@/hooks/useStores';
 import { useOrders } from '@/hooks/useOrders';
-import { syncAllStores, exportOrdersToExcel, updateOrderStatusBatch, updateOrderDetails, importOrdersFromExcel, deleteOrdersPermanentlyBatch } from '@/lib/woocommerce';
+import {
+  syncAllStores,
+  exportOrdersToExcel,
+  updateOrderStatusBatch,
+  updateOrderDetails,
+  importOrdersFromExcel,
+  importOrdersFromExcelForWhatsapp,
+  deleteOrdersPermanentlyBatch,
+} from '@/lib/woocommerce';
 import DashboardHeader from '@/components/DashboardHeader';
 import DashboardTabs from '@/components/DashboardTabs';
 import StoreConnectionModal from '@/components/StoreConnectionModal';
@@ -313,8 +321,11 @@ const WooCommerceDashboardComponent = () => {
 
     setLoading(true);
     try {
-        const createdOrders = await importOrdersFromExcel(file, stores, toast);
+        // const createdOrders = await importOrdersFromExcel(file, stores, toast);
+        const store = { id: 'whatsapp-order', name: 'WhatsApp' };
+        const createdOrders = await importOrdersFromExcelForWhatsapp(file, store, toast);
         if (createdOrders && createdOrders.length > 0) {
+            console.log('createdOrders', createdOrders);
             addImportedOrders(createdOrders);
         }
     } catch (error) {

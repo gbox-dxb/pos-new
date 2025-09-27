@@ -356,6 +356,13 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
     );
   };
   
+  const handleWhatsAppClick = (value) => {
+    if (value) {
+      const cleanedPhone = ('' + value).replace(/\D/g, '');
+      window.open(`https://wa.me/${cleanedPhone}`, '_blank', 'noopener,noreferrer');
+    }
+  };
+  
   const uniqueKey = `${order.store_id}-${order.id}`;
   
   return (
@@ -471,8 +478,14 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
           <Button
             size="sm"
             variant="secondary"
-            onClick={() => window.open(`${order.store_url}wp-admin/post.php?post=${order.id}&action=edit`, '_blank')}
-            title="View in WP Admin"
+            onClick={() => {
+              if (order.store_id === "whatsapp-order") {
+                handleWhatsAppClick(order.billing.phone);
+              } else {
+                window.open(`${order.store_url}wp-admin/post.php?post=${order.id}&action=edit`, '_blank')
+              }
+            }}
+            title="View in WP"
           >
             <Eye className="h-3 w-3" />
           </Button>
