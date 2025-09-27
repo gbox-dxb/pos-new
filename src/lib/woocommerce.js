@@ -577,8 +577,8 @@ export const importOrdersFromExcelForWhatsapp = (file, store, toast) => {
           const newId = `${row['Reference'].replace(/^([A-Za-z]{2})[A-Za-z0-9]*-.*([0-9]{2}).*$/, "$1$2")}` + Math.floor(10000 + Math.random() * 90000);
           let total = row['Total'];
           const parseLineItems = (str) => {
-            if (!str || typeof str !== "string") return [];
-            return str
+            // if (!str || typeof str !== "string") return [];
+            return String(str)
             .split(/[,;]+/) // split by comma OR semicolon
             .map(s => s.trim())
             .filter(s => s.length > 0)
@@ -596,7 +596,7 @@ export const importOrdersFromExcelForWhatsapp = (file, store, toast) => {
             .filter(item => item.name.length > 0); // clean invalids
           }
           return {
-            id: newId,
+            id: row['Reference'], // newId,
             store_id: store['id'],
             store_name: row['Store'] || store['name'],
             date_created: row['Date'] || moment().format("YYYY-MM-DDTHH:mm:ss"),
