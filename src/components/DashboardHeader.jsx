@@ -58,13 +58,13 @@ const DashboardHeader = ({
   const getGreeting = () => {
     const hour = moment().hour();
     if (hour >= 5 && hour < 12) {
-      return "Good Morning ☀️";
+      return "☀️ Good Morning";
     } else if (hour >= 12 && hour < 17) {
       return "Good Afternoon";
     } else if (hour >= 17 && hour < 21) {
       return "Good Evening";
     } else {
-      return "Good Night 🌙";
+      return "🌙 Good Night";
     }
   };
   
@@ -84,7 +84,7 @@ const DashboardHeader = ({
                <ShoppingCart className={`h-6 w-6 ${theme === 'dark' ? 'text-primary' : ''}`} />
             </div>
             <h1 className="text-3xl font-bold text-foreground capitalize">
-              {`${getGreeting()}, ${username ? username : 'G-BOX'}`}
+              {`${getGreeting()} ${username ? username : 'G-BOX'}`}
             </h1>
           </div>
           <p className="text-muted-foreground"></p>
