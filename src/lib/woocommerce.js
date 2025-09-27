@@ -585,10 +585,10 @@ export const importOrdersFromExcelForWhatsapp = (file, store, toast) => {
             .map(item => {
               const [qtyPart, ...nameParts] = item.split("x");
               const quantity = parseInt(qtyPart.trim(), 10) || 0;
-              const name = nameParts.join("x").trim(); // in case name has 'x' in it
+              const name = nameParts.join("x").trim(); // if u don't want see 'x' in it
               return {
                 id: uuidv4(),
-                name,
+                name: item,
                 quantity,
                 total
               };
