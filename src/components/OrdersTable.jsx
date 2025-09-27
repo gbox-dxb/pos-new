@@ -395,7 +395,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
         </Badge>
       </td>}
       {visibleColumns.date && <td>
-        <div className="text-sm whitespace-nowrap lg:whitespace-normal">
+        <div className="text-sm whitespace-nowrap xl:whitespace-normal">
           {formatDate(order.date_created)}
         </div>
       </td>}
@@ -423,11 +423,11 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       }}>
         <div className="text-xs text-gray-500 font-bold text-base">{(order.store_id === "whatsapp-order" ? order.id : order.store_name.slice(-3) + '' + order.id ).toUpperCase()}</div>
       </td>}
-      {visibleColumns.billing && <td className="text-xs">
+      {visibleColumns.billing && <td className="whitespace-nowrap lg:whitespace-normal text-xs">
         <BillingAddress address={order.billing} meta_data={order?.meta_data} />
       </td>}
       {visibleColumns.shipping && <td className="text-xs"><ShippingAddress address={order.shipping} /></td>}
-      {visibleColumns.items && <td className="text-xs">
+      {visibleColumns.items && <td className="whitespace-nowrap lg:whitespace-normal text-xs">
         <ul className="space-y-1">
           {/*{
             (order.store_id === "whatsapp-order") ? console.log('>>>>>>', order.line_items) : console.log(order.line_items)
@@ -636,10 +636,10 @@ const OrdersTable = ({ orders, loading, onUpdateOrders, isUpdatingOrders, onUpda
                   disabled={!canEdit}
                 />
               </th>
-              {screenOptions.visibleColumns.order && <th style={{ width: "120px" }}>Order</th>}
-              {screenOptions.visibleColumns.status && <th style={{ width: "130px" }}>Status</th>}
+              {screenOptions.visibleColumns.order && <th style={{ width: "100px" }}>Order</th>}
+              {screenOptions.visibleColumns.status && <th style={{ width: "100px" }}>Status</th>}
               {screenOptions.visibleColumns.date && <th style={{ width: "120px" }}>Date</th>}
-              {screenOptions.visibleColumns.delivery_status && <th style={{ width: "170px", textAlign: "center" }}>Delivery Status</th>}
+              {screenOptions.visibleColumns.delivery_status && <th style={{ width: "160px", textAlign: "center" }}>Delivery Status</th>}
               {screenOptions.visibleColumns.ref && <th style={{ width: "120px" }}>Reference</th>}
               {screenOptions.visibleColumns.billing && <th>Billing</th>}
               {screenOptions.visibleColumns.shipping && <th>Ship to</th>}
