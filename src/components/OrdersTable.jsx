@@ -429,6 +429,9 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       {visibleColumns.shipping && <td className="text-xs"><ShippingAddress address={order.shipping} /></td>}
       {visibleColumns.items && <td className="text-xs">
         <ul className="space-y-1">
+          {/*{
+            (order.store_id === "whatsapp-order") ? console.log('>>>>>>', order.line_items) : console.log(order.line_items)
+          }*/}
           {order.line_items?.map(item => (
             <li key={item.id}>
               {
