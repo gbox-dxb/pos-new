@@ -14,20 +14,36 @@ const useTrackingCompanies = () => {
 
     useEffect(() => {
         try {
-            const storedCompanies = localStorage.getItem('trackingCompanies');
-            if (storedCompanies) {
-                setCompanies(JSON.parse(storedCompanies));
-            } else {
-                // Add a default company if none exist
-                const defaultCompany = [{
-                    id: uuidv4(),
-                    name: 'Delivery Panda',
-                    url: import.meta.env.VITE_PANDA_URL,
-                    apiKey: import.meta.env.VITE_PANDA_API_KEY
-                }];
-                setCompanies(defaultCompany);
-                localStorage.setItem('trackingCompanies', JSON.stringify(defaultCompany));
+          const defaultCompany = [
+            {
+              id: uuidv4(),
+              name: 'Panda',
+              url: import.meta.env.VITE_PANDA_URL,
+              apiKey: import.meta.env.VITE_PANDA_API_KEY
+            }, {
+              id: uuidv4(),
+              name: 'Benex',
+              url: import.meta.env.VITE_BENEX_URL,
+              apiKey: import.meta.env.VITE_BENEX_API_KEY,
             }
+          ];
+          setCompanies(defaultCompany);
+          localStorage.setItem('trackingCompanies', JSON.stringify(defaultCompany));
+          
+          /*const storedCompanies = localStorage.getItem('trackingCompanies');
+          if (storedCompanies) {
+              setCompanies(JSON.parse(storedCompanies));
+          } else {
+              // Add a default company if none exist
+              const defaultCompany = [{
+                  id: uuidv4(),
+                  name: 'Delivery Panda',
+                  url: import.meta.env.VITE_PANDA_URL,
+                  apiKey: import.meta.env.VITE_PANDA_API_KEY
+              }];
+              setCompanies(defaultCompany);
+              localStorage.setItem('trackingCompanies', JSON.stringify(defaultCompany));
+          }*/
         } catch (error) {
             console.error("Failed to load tracking companies from localStorage", error);
             setCompanies([]);
@@ -115,7 +131,7 @@ const TrackingSettings = ({ companies, saveCompanies }) => {
                                 onChange={(e) => handleInputChange(company.id, 'url', e.target.value)}
                             />
                             <Input
-                                type="password"
+                                type=""
                                 placeholder="API Key"
                                 value={company.apiKey}
                                 onChange={(e) => handleInputChange(company.id, 'apiKey', e.target.value)}
