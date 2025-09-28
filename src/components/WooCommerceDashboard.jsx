@@ -185,6 +185,24 @@ const WooCommerceDashboardComponent = () => {
     };
   }, [loadStoresFromStorage, loadOrdersFromStorage]);
 
+  
+  const allowedStores = useMemo(() => {
+    if (isAdmin) return stores; // admin sees all
+    if (!permissions) return []; // still loading permissions
+    const allowedIds = Object.keys(permissions.allowedStores || {});
+    return stores.filter(store => allowedIds.includes(store.id));
+  }, [stores, permissions, isAdmin]);
+  
+  const allowedOrders = useMemo(() => {
+    if (isAdmin) return orders; // admin sees all
+    if (!permissions) return []; // still loading permissions
+    
+    const allowedIds = Object.keys(permissions.allowedStores || {});
+    allowedIds.push('whatsapp-order')
+    return orders.filter(order => allowedIds.includes(order.store_id));
+  }, [orders, permissions, isAdmin]);
+  
+  
   useEffect(() => {
     if (isAdmin) {
       const tabOrderRef = ref(database, 'settings/tabOrder');
@@ -206,7 +224,8 @@ const WooCommerceDashboardComponent = () => {
   const { activeOrders, trashedOrders } = useMemo(() => {
     const active = [];
     const trashed = [];
-    orders.forEach(order => {
+    // orders
+    allowedOrders.forEach(order => {
       if (order.status === 'trash') {
         trashed.push(order);
       } else {
@@ -214,7 +233,7 @@ const WooCommerceDashboardComponent = () => {
       }
     });
     return { activeOrders: active, trashedOrders: trashed };
-  }, [orders]);
+  }, [allowedOrders]); // orders
 
   const sortedOrders = useMemo(() => {
       return [...activeOrders].sort((a, b) => new Date(b.date_created) - new Date(a.date_created));
@@ -509,7 +528,7 @@ const WooCommerceDashboardComponent = () => {
       </div>
       <div className="px-4 sm:px-6 lg:px-8 py-8">
         <MainDashboard
-            stores={stores}
+            stores={allowedStores} // stores
             sortedOrders={sortedOrders}
             filteredOrders={filteredOrders}
             trashedOrders={trashedOrders}
