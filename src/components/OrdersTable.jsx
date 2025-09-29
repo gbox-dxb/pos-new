@@ -402,8 +402,8 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       
       {visibleColumns.delivery_status && <td style={{ textAlign: "center" }}>
         {order.status.toLowerCase() !== 'processing' ? <DeliveryStatus order={order}/> : (
-          <div className={'text-3xl text-muted-foreground'} title={'ᯓ⛟ awaiting shipment..'}>
-            📡
+          <div className={'text-3xl text-muted-foreground'} title={'Awaiting Shipment'}>
+            ⏱
           </div>
         )}
       </td>}
