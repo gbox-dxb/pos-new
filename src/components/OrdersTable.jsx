@@ -401,7 +401,7 @@ const OrderRow = ({ order, index, isDuplicatePhone, isSelected, onSelectionChang
       </td>}
       
       {visibleColumns.delivery_status && <td style={{ textAlign: "center" }}>
-        {order.status.toLowerCase() !== 'processing' ? <DeliveryStatus order={order}/> : (
+        {!['processing', 'pending'].includes(order.status.toLowerCase()) ? <DeliveryStatus order={order}/> : (
           <div className={'text-3xl text-muted-foreground'} title={'Awaiting Shipment'}>
             ⏱
           </div>
