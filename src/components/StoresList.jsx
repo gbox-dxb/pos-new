@@ -39,7 +39,8 @@ const StoresList = ({ stores, loading, onSync, onAddStore, onEditStore, onDelete
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  /*grid gap-4 md:grid-cols-2 lg:grid-cols-3*/
+    <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
       {stores.map(store => (
         <Card key={store.id} className="p-4 flex flex-col justify-between">
           <div>
