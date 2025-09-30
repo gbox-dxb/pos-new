@@ -1,6 +1,6 @@
 
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getDatabase } from "firebase/database";
+import { getDatabase, ref as fbRef, set, update, remove, get, onValue } from "firebase/database";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -19,3 +19,45 @@ const database = getDatabase(app);
 const analytics = getAnalytics(app);
 
 export { app, database, analytics };
+
+/*
+
+// --- Session helper ---
+function getSession() {
+  try {
+    return JSON.parse(sessionStorage.getItem("auth"));
+  } catch {
+    return null;
+  }
+}
+
+// --- Custom ref wrapper ---
+function ref(db, path = "") {
+  const session = getSession();
+  
+  if (!session || session.type === "admin") {
+    // admin (or no session) → use path as is
+    return fbRef(db, path);
+  }
+  
+  if (session.type === "user") {
+    const email = session.user?.email;
+    if (!email) return fbRef(db, path);
+    
+    // take only the part before @
+    let username = email.split("@")[0];
+    // sanitize username for Firebase path
+    username = username.replace(/[.#$/\[\]\/]/g, "_");
+    
+    // prepend @username
+    const base = `@${username}`;
+    
+    return fbRef(db, `${base}/${path}`);
+  }
+  
+  return fbRef(db, path);
+}
+
+// --- Exports ---
+export { app, database, analytics, ref, set, update, remove, get, onValue };
+*/
